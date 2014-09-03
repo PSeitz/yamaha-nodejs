@@ -1,0 +1,6 @@
+{
+	"standby":"<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Power_Control><Power>Standby</Power></Power_Control></Main_Zone></YAMAHA_AV>",
+	"poweron":"<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Power_Control><Power>On</Power></Power_Control></Main_Zone></YAMAHA_AV>",
+	"switchradio":"<YAMAHA_AV cmd=\"PUT\"><NET_RADIO><List_Control><Direct_Sel>Line_6</Direct_Sel></List_Control></NET_RADIO></YAMAHA_AV>",
+	"switchinput":"<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Input><Input_Sel>HDMI1</Input_Sel></Input></Main_Zone></YAMAHA_AV>"
+}
