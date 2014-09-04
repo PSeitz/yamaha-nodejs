@@ -1,0 +1,33 @@
+{
+  "name": "Yamaha-Network-API",
+  "version": "0.0.1",
+  "description": "An API to control your YAMAHA Receiver written in nodejs",
+  "main": "control.js",
+  "dependencies": {
+    "deferred": "~0.7.1",
+    "request": "~2.40.0",
+    "xml2js": "~0.4.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PSeitz/Yamaha-Network-API.git"
+  },
+  "keywords": [
+    "yamaha",
+    "api",
+    "nodejs",
+    "node",
+    "receiver",
+    "network"
+  ],
+  "author": "Pascal Seitz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PSeitz/Yamaha-Network-API/issues"
+  },
+  "homepage": "https://github.com/PSeitz/Yamaha-Network-API"
+}
