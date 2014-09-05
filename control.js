@@ -5,11 +5,21 @@ var parseString = require('xml2js').parseString;
 var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Input><Input_Sel>HDMI1</Input_Sel></Input></Main_Zone></YAMAHA_AV>';
 
 
-function SendXMLToReceiver(xml){
+
+
+
+function Yamaha(ip) // Constructor
+{
+    this.ip = ip;
+}
+
+
+Yamaha.prototype.SendXMLToReceiver= function(xml){
 	var d = deferred();
 	var promise = request.post(
-	    {method: 'POST', 
-		    uri: 'http://192.168.0.25/YamahaRemoteControl/ctrl',
+	    {
+	    	method: 'POST', 
+		    uri: 'http://'+this.ip+'/YamahaRemoteControl/ctrl',
 		    body:xml
 		},
 	    function (error, response, body) {
@@ -30,25 +40,30 @@ function SendXMLToReceiver(xml){
 
 	return d.promise;
 
-}
+};
+
+Yamaha.prototype.getColor = function()
+{
+    return "The receiver is blue";
+};
 
 
-var service = {};
+// var service = {};
 
-service.powerOn = function(to){
+Yamaha.prototype.powerOn = function(to){
 	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Power_Control><Power>On</Power></Power_Control></Main_Zone></YAMAHA_AV>';
-	return SendXMLToReceiver(command);
+	return this.SendXMLToReceiver(command);
 };
 
-service.powerOff = function(to){
+Yamaha.prototype.powerOff = function(to){
 	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Power_Control><Power>Standby</Power></Power_Control></Main_Zone></YAMAHA_AV>';
-	return SendXMLToReceiver(command);
+	return this.SendXMLToReceiver(command);
 };
 
 
-service.setMainInputTo = function(to){
+Yamaha.prototype.setMainInputTo = function(to){
 	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Input><Input_Sel>'+to+'</Input_Sel></Input></Main_Zone></YAMAHA_AV>';
-	return SendXMLToReceiver(command);
+	return this.SendXMLToReceiver(command);
 };
 
 
@@ -56,27 +71,27 @@ service.setMainInputTo = function(to){
 
 // <YAMAHA_AV cmd="GET"><NET_RADIO><List_Info>GetParam</List_Info></NET_RADIO></YAMAHA_AV>
 
-service.selectWebRadioListWithNumber = function(number){
+Yamaha.prototype.selectWebRadioListWithNumber = function(number){
 	var command = '<YAMAHA_AV cmd="PUT"><NET_RADIO><List_Control><Direct_Sel>Line_'+number+'</Direct_Sel></List_Control></NET_RADIO></YAMAHA_AV>';
-	return SendXMLToReceiver(command);
+	return this.SendXMLToReceiver(command);
 };
 
 
-service.setWebRadioToChannel = function(channel){
-	return service.selectWebRadioListWithNumber(channel);
+Yamaha.prototype.setWebRadioToChannel = function(channel){
+	return this.selectWebRadioListWithNumber(channel);
 };
 
-service.getWebRadioChannels = function(){
+Yamaha.prototype.getWebRadioChannels = function(){
 	var command = '<YAMAHA_AV cmd="GET"><NET_RADIO><List_Info>GetParam</List_Info></NET_RADIO></YAMAHA_AV>';
-	return SendXMLToReceiver(command);
+	return this.SendXMLToReceiver(command);
 };
 
 
-service.switchToWebRadioWithName = function(name){
+Yamaha.prototype.switchToWebRadioWithName = function(name){
+	var self = this;
+	self.setMainInputTo("NET RADIO").done(function(){
 
-	service.setMainInputTo("NET RADIO").done(function(){
-
-		service.getWebRadioChannels().done(function(result){
+		self.getWebRadioChannels().done(function(result){
 			console.log(result);
 			parseString(result, function (err, result) {
 			    console.dir(result);
@@ -88,22 +103,20 @@ service.switchToWebRadioWithName = function(name){
 
 	});
 
-	// var command = '<YAMAHA_AV cmd=\"PUT\"><NET_RADIO><List_Control><Direct_Sel>'+to+'</Direct_Sel></List_Control></NET_RADIO></YAMAHA_AV>';
-	// return SendXMLToReceiver(command);
 };
 
 
 
-service.switchToFavoriteNumber = function(number){
-
-	service.powerOn().done(delay(2,function(){
+Yamaha.prototype.switchToFavoriteNumber = function(number){
+	var self = this;
+	self.powerOn().done(delay(2,function(){
 
 		console.log("powerOn");
-		service.setMainInputTo("NET RADIO").done(delay(2, function(){
+		self.setMainInputTo("NET RADIO").done(delay(2, function(){
 			console.log("NET RADIO");
-			service.selectWebRadioListWithNumber(1).done(delay(2, function(){
+			self.selectWebRadioListWithNumber(1).done(delay(2, function(){
 				console.log("Selected Favorites");
-				service.selectWebRadioListWithNumber(number).done(function(){
+				self.selectWebRadioListWithNumber(number).done(function(){
 					console.log("Callback Hell accomplished");
 				});
 			}));
@@ -116,7 +129,8 @@ service.switchToFavoriteNumber = function(number){
 
 };
 
-service.switchToFavoriteNumber(1);
+// var yamaha = new Yamaha("192.168.0.25");
+// yamaha.switchToFavoriteNumber(1);
 
 
 
