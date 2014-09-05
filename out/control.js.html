@@ -1,4 +1,31 @@
-var request = require('request');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: control.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: control.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var request = require('request');
 var deferred = require('deferred');
 var parseString = require('xml2js').parseString;
 
@@ -17,18 +44,18 @@ function Yamaha(ip)
 
 
 Yamaha.prototype.powerOn = function(to){
-	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Power_Control><Power>On</Power></Power_Control></Main_Zone></YAMAHA_AV>';
+	var command = '&lt;YAMAHA_AV cmd="PUT">&lt;Main_Zone>&lt;Power_Control>&lt;Power>On&lt;/Power>&lt;/Power_Control>&lt;/Main_Zone>&lt;/YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
 
 Yamaha.prototype.powerOff = function(to){
-	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Power_Control><Power>Standby</Power></Power_Control></Main_Zone></YAMAHA_AV>';
+	var command = '&lt;YAMAHA_AV cmd="PUT">&lt;Main_Zone>&lt;Power_Control>&lt;Power>Standby&lt;/Power>&lt;/Power_Control>&lt;/Main_Zone>&lt;/YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
 
 
 Yamaha.prototype.setVolumeTo = function(to){
-	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Volume><Lvl><Val>'+to+'</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Volume></Main_Zone></YAMAHA_AV>';
+	var command = '&lt;YAMAHA_AV cmd="PUT">&lt;Main_Zone>&lt;Volume>&lt;Lvl>&lt;Val>'+to+'&lt;/Val>&lt;Exp>1&lt;/Exp>&lt;Unit>dB&lt;/Unit>&lt;/Lvl>&lt;/Volume>&lt;/Main_Zone>&lt;/YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
 
@@ -41,7 +68,7 @@ Yamaha.prototype.volumeDown= function(by){
 };
 
 Yamaha.prototype.setMainInputTo = function(to){
-	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Input><Input_Sel>'+to+'</Input_Sel></Input></Main_Zone></YAMAHA_AV>';
+	var command = '&lt;YAMAHA_AV cmd="PUT">&lt;Main_Zone>&lt;Input>&lt;Input_Sel>'+to+'&lt;/Input_Sel>&lt;/Input>&lt;/Main_Zone>&lt;/YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
 
@@ -73,7 +100,7 @@ Yamaha.prototype.SendXMLToReceiver= function(xml){
 		    body:xml
 		},
 	    function (error, response, body) {
-	        if (!error && response.statusCode == 200) {
+	        if (!error &amp;&amp; response.statusCode == 200) {
 	            d.resolve(body);
 	        }else{
 	        	if (error) d.reject(error);
@@ -99,7 +126,7 @@ Yamaha.prototype.getColor = function()
 
 Yamaha.prototype.getBasicInfo = function(){
 	var d = deferred();
-	var command = '<YAMAHA_AV cmd="GET"><Main_Zone><Basic_Status>GetParam</Basic_Status></Main_Zone></YAMAHA_AV>';
+	var command = '&lt;YAMAHA_AV cmd="GET">&lt;Main_Zone>&lt;Basic_Status>GetParam&lt;/Basic_Status>&lt;/Main_Zone>&lt;/YAMAHA_AV>';
 	this.SendXMLToReceiver(command).done(function(xmlresult){
 		parseString(xmlresult, function (err, info) {
 			enrichBasicInfo(info);
@@ -114,7 +141,7 @@ Yamaha.prototype.getBasicInfo = function(){
 
 Yamaha.prototype.getSystemConfig = function(){
 	var d = deferred();
-	var command = '<YAMAHA_AV cmd="GET"><System><Config>GetParam</Config></System></YAMAHA_AV>';
+	var command = '&lt;YAMAHA_AV cmd="GET">&lt;System>&lt;Config>GetParam&lt;/Config>&lt;/System>&lt;/YAMAHA_AV>';
 	this.SendXMLToReceiver(command).done(function(xmlresult){
 		parseString(xmlresult, function (err, info) {
 			d.resolve(info);
@@ -168,12 +195,12 @@ Yamaha.prototype.adjustVolumeBy = function(by){
 	return d.promise;
 };
 
-// <YAMAHA_AV cmd="PUT"><NET_RADIO><List_Control><Cursor>Return</Cursor></List_Control></NET_RADIO></YAMAHA_AV>
+// &lt;YAMAHA_AV cmd="PUT">&lt;NET_RADIO>&lt;List_Control>&lt;Cursor>Return&lt;/Cursor>&lt;/List_Control>&lt;/NET_RADIO>&lt;/YAMAHA_AV>
 
-// <YAMAHA_AV cmd="GET"><NET_RADIO><List_Info>GetParam</List_Info></NET_RADIO></YAMAHA_AV>
+// &lt;YAMAHA_AV cmd="GET">&lt;NET_RADIO>&lt;List_Info>GetParam&lt;/List_Info>&lt;/NET_RADIO>&lt;/YAMAHA_AV>
 
 Yamaha.prototype.selectWebRadioListWithNumber = function(number){
-	var command = '<YAMAHA_AV cmd="PUT"><NET_RADIO><List_Control><Direct_Sel>Line_'+number+'</Direct_Sel></List_Control></NET_RADIO></YAMAHA_AV>';
+	var command = '&lt;YAMAHA_AV cmd="PUT">&lt;NET_RADIO>&lt;List_Control>&lt;Direct_Sel>Line_'+number+'&lt;/Direct_Sel>&lt;/List_Control>&lt;/NET_RADIO>&lt;/YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
 
@@ -183,7 +210,7 @@ Yamaha.prototype.setWebRadioToChannel = function(channel){
 };
 
 Yamaha.prototype.getWebRadioChannels = function(){
-	var command = '<YAMAHA_AV cmd="GET"><NET_RADIO><List_Info>GetParam</List_Info></NET_RADIO></YAMAHA_AV>';
+	var command = '&lt;YAMAHA_AV cmd="GET">&lt;NET_RADIO>&lt;List_Info>GetParam&lt;/List_Info>&lt;/NET_RADIO>&lt;/YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
 
@@ -219,4 +246,26 @@ function delay(delayInS, callAfterDelay){
 			callAfterDelay();
 		}, delayInS*1000);
 	};
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Yamaha.html">Yamaha</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sat Sep 06 2014 00:59:33 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

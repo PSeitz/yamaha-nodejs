@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>control.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>control.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> request = <span class="hljs-built_in">require</span>(<span class="hljs-string">'request'</span>);
+<span class="hljs-keyword">var</span> deferred = <span class="hljs-built_in">require</span>(<span class="hljs-string">'deferred'</span>);
+<span class="hljs-keyword">var</span> parseString = <span class="hljs-built_in">require</span>(<span class="hljs-string">'xml2js'</span>).parseString;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>The Module Constructor, needs the ip as parameter : e.g. new Yamaha(“192.168.0.15”)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Yamaha</span><span class="hljs-params">(ip)</span> 
+</span>{
+    <span class="hljs-keyword">this</span>.ip = ip;
+}
+
+
+Yamaha.prototype.powerOn = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(to)</span></span>{
+	<span class="hljs-keyword">var</span> command = <span class="hljs-string">'&lt;YAMAHA_AV cmd="PUT"&gt;&lt;Main_Zone&gt;&lt;Power_Control&gt;&lt;Power&gt;On&lt;/Power&gt;&lt;/Power_Control&gt;&lt;/Main_Zone&gt;&lt;/YAMAHA_AV&gt;'</span>;
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.powerOff = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(to)</span></span>{
+	<span class="hljs-keyword">var</span> command = <span class="hljs-string">'&lt;YAMAHA_AV cmd="PUT"&gt;&lt;Main_Zone&gt;&lt;Power_Control&gt;&lt;Power&gt;Standby&lt;/Power&gt;&lt;/Power_Control&gt;&lt;/Main_Zone&gt;&lt;/YAMAHA_AV&gt;'</span>;
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.SendXMLToReceiver(command);
+};
+
+
+Yamaha.prototype.setVolumeTo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(to)</span></span>{
+	<span class="hljs-keyword">var</span> command = <span class="hljs-string">'&lt;YAMAHA_AV cmd="PUT"&gt;&lt;Main_Zone&gt;&lt;Volume&gt;&lt;Lvl&gt;&lt;Val&gt;'</span>+to+<span class="hljs-string">'&lt;/Val&gt;&lt;Exp&gt;1&lt;/Exp&gt;&lt;Unit&gt;dB&lt;/Unit&gt;&lt;/Lvl&gt;&lt;/Volume&gt;&lt;/Main_Zone&gt;&lt;/YAMAHA_AV&gt;'</span>;
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.volumeUp = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(by)</span></span>{
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.adjustVolumeBy(by);
+};
+
+Yamaha.prototype.volumeDown= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(by)</span></span>{
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.adjustVolumeBy(-by);
+};
+
+Yamaha.prototype.setMainInputTo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(to)</span></span>{
+	<span class="hljs-keyword">var</span> command = <span class="hljs-string">'&lt;YAMAHA_AV cmd="PUT"&gt;&lt;Main_Zone&gt;&lt;Input&gt;&lt;Input_Sel&gt;'</span>+to+<span class="hljs-string">'&lt;/Input_Sel&gt;&lt;/Input&gt;&lt;/Main_Zone&gt;&lt;/YAMAHA_AV&gt;'</span>;
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.SendXMLToReceiver(command);
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Navigates and selects the #number of the webradio favorites</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Yamaha.prototype.switchToFavoriteNumber = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(number)</span></span>{
+	<span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+	self.powerOn().done(delay(<span class="hljs-number">2</span>,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+
+		<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"powerOn"</span>);
+		self.setMainInputTo(<span class="hljs-string">"NET RADIO"</span>).done(delay(<span class="hljs-number">2</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+			<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"NET RADIO"</span>);
+			self.selectWebRadioListWithNumber(<span class="hljs-number">1</span>).done(delay(<span class="hljs-number">2</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+				<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Selected Favorites"</span>);
+				self.selectWebRadioListWithNumber(number).done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+					<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Callback Hell accomplished"</span>);
+				});
+			}));
+
+		}));
+	}));
+};
+
+Yamaha.prototype.SendXMLToReceiver= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(xml)</span></span>{
+	<span class="hljs-keyword">var</span> d = deferred();
+	<span class="hljs-keyword">var</span> promise = request.post(
+	    {
+	    	method: <span class="hljs-string">'POST'</span>, 
+		    uri: <span class="hljs-string">'http://'</span>+<span class="hljs-keyword">this</span>.ip+<span class="hljs-string">'/YamahaRemoteControl/ctrl'</span>,
+		    body:xml
+		},
+	    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(error, response, body)</span> </span>{
+	        <span class="hljs-keyword">if</span> (!error &amp;&amp; response.statusCode == <span class="hljs-number">200</span>) {
+	            d.resolve(body);
+	        }<span class="hljs-keyword">else</span>{
+	        	<span class="hljs-keyword">if</span> (error) d.reject(error);
+	        	<span class="hljs-keyword">else</span> d.reject(response.statusCode);	
+	        }
+	        <span class="hljs-keyword">if</span> (error){
+	        	<span class="hljs-built_in">console</span>.log(error);
+	        	d.reject(error);	
+	        }
+	    }
+	);
+
+	<span class="hljs-keyword">return</span> d.promise;
+
+};
+
+Yamaha.prototype.getColor = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>
+</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"The receiver is blue"</span>;
+};
+
+
+
+Yamaha.prototype.getBasicInfo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+	<span class="hljs-keyword">var</span> d = deferred();
+	<span class="hljs-keyword">var</span> command = <span class="hljs-string">'&lt;YAMAHA_AV cmd="GET"&gt;&lt;Main_Zone&gt;&lt;Basic_Status&gt;GetParam&lt;/Basic_Status&gt;&lt;/Main_Zone&gt;&lt;/YAMAHA_AV&gt;'</span>;
+	<span class="hljs-keyword">this</span>.SendXMLToReceiver(command).done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(xmlresult)</span></span>{
+		parseString(xmlresult, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err, info)</span> </span>{
+			enrichBasicInfo(info);
+			d.resolve(info);
+		});
+	}, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err)</span> </span>{
+		d.reject(err);
+	});
+	<span class="hljs-keyword">return</span> d.promise;
+};
+
+
+Yamaha.prototype.getSystemConfig = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+	<span class="hljs-keyword">var</span> d = deferred();
+	<span class="hljs-keyword">var</span> command = <span class="hljs-string">'&lt;YAMAHA_AV cmd="GET"&gt;&lt;System&gt;&lt;Config&gt;GetParam&lt;/Config&gt;&lt;/System&gt;&lt;/YAMAHA_AV&gt;'</span>;
+	<span class="hljs-keyword">this</span>.SendXMLToReceiver(command).done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(xmlresult)</span></span>{
+		parseString(xmlresult, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err, info)</span> </span>{
+			d.resolve(info);
+		});
+	}, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err)</span> </span>{
+		d.reject(err);
+	});
+	<span class="hljs-keyword">return</span> d.promise;
+};
+
+
+Yamaha.prototype.getAvailableInputs = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+	<span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+	<span class="hljs-keyword">var</span> d = deferred();
+	self.getSystemConfig().done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(info)</span></span>{
+		<span class="hljs-keyword">var</span> inputs = [];
+		<span class="hljs-keyword">var</span> inputsXML = info.YAMAHA_AV.System[<span class="hljs-number">0</span>].Config[<span class="hljs-number">0</span>].Name[<span class="hljs-number">0</span>].Input[<span class="hljs-number">0</span>];
+		<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> prop <span class="hljs-keyword">in</span> inputsXML) {
+			inputs.push(inputsXML[prop][<span class="hljs-number">0</span>]);
+		}
+		d.resolve(inputs);
+	}, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err)</span> </span>{
+		d.reject(err);
+	});
+	<span class="hljs-keyword">return</span> d.promise;
+};
+
+
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">enrichBasicInfo</span><span class="hljs-params">(basicInfo)</span></span>{
+
+	basicInfo.getVolume = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+		<span class="hljs-keyword">return</span> <span class="hljs-built_in">parseInt</span>(basicInfo.YAMAHA_AV.Main_Zone[<span class="hljs-number">0</span>].Basic_Status[<span class="hljs-number">0</span>].Volume[<span class="hljs-number">0</span>].Lvl[<span class="hljs-number">0</span>].Val[<span class="hljs-number">0</span>]);
+	};
+
+	basicInfo.isMuted = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+		<span class="hljs-keyword">return</span> basicInfo.YAMAHA_AV.Main_Zone[<span class="hljs-number">0</span>].Basic_Status[<span class="hljs-number">0</span>].Volume[<span class="hljs-number">0</span>].Mute[<span class="hljs-number">0</span>] !== <span class="hljs-string">"Off"</span>;
+	};
+	
+
+}
+
+
+Yamaha.prototype.adjustVolumeBy = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(by)</span></span>{
+	<span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> by == <span class="hljs-string">'string'</span> || by <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">String</span>) by = <span class="hljs-built_in">parseInt</span>(by);
+	<span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+	<span class="hljs-keyword">var</span> d = deferred();
+	self.getBasicInfo().done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(basicInfo)</span></span>{
+		self.setVolumeTo(basicInfo.getVolume()+by).done(d.resolve);
+	});
+	<span class="hljs-keyword">return</span> d.promise;
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <YAMAHA_AV cmd="PUT"><NET_RADIO><List_Control><Cursor>Return</Cursor></List_Control></NET_RADIO></YAMAHA_AV>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <YAMAHA_AV cmd="GET"><NET_RADIO><List_Info>GetParam</List_Info></NET_RADIO></YAMAHA_AV>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+Yamaha.prototype.selectWebRadioListWithNumber = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(number)</span></span>{
+	<span class="hljs-keyword">var</span> command = <span class="hljs-string">'&lt;YAMAHA_AV cmd="PUT"&gt;&lt;NET_RADIO&gt;&lt;List_Control&gt;&lt;Direct_Sel&gt;Line_'</span>+number+<span class="hljs-string">'&lt;/Direct_Sel&gt;&lt;/List_Control&gt;&lt;/NET_RADIO&gt;&lt;/YAMAHA_AV&gt;'</span>;
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.SendXMLToReceiver(command);
+};
+
+
+Yamaha.prototype.setWebRadioToChannel = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(channel)</span></span>{
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.selectWebRadioListWithNumber(channel);
+};
+
+Yamaha.prototype.getWebRadioChannels = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+	<span class="hljs-keyword">var</span> command = <span class="hljs-string">'&lt;YAMAHA_AV cmd="GET"&gt;&lt;NET_RADIO&gt;&lt;List_Info&gt;GetParam&lt;/List_Info&gt;&lt;/NET_RADIO&gt;&lt;/YAMAHA_AV&gt;'</span>;
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.SendXMLToReceiver(command);
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <h1 id="this-is-an-h1">This is an H1</h1>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Yamaha.prototype.switchToWebRadioWithName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(name)</span></span>{
+	<span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+	self.setMainInputTo(<span class="hljs-string">"NET RADIO"</span>).done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+
+		self.getWebRadioChannels().done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(result)</span></span>{
+			<span class="hljs-built_in">console</span>.log(result);
+			parseString(result, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err, result)</span> </span>{
+			    <span class="hljs-built_in">console</span>.dir(result);
+			});
+
+		}, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err)</span> </span>{
+		  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"err "</span>+err);
+		});
+
+	});
+
+};
+
+
+
+<span class="hljs-keyword">var</span> yamaha = <span class="hljs-keyword">new</span> Yamaha(<span class="hljs-string">"192.168.0.25"</span>);
+yamaha.getAvailableInputs();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>yamaha.volumeUp(“35”);
+yamaha.switchToFavoriteNumber(1);</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>This is needed, because the yamaha has a stateful api - yeah …</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delay</span><span class="hljs-params">(delayInS, callAfterDelay)</span></span>{
+	<span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+		setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{
+			callAfterDelay();
+		}, delayInS*<span class="hljs-number">1000</span>);
+	};
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
