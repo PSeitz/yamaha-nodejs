@@ -9,10 +9,15 @@ var parseString = require('xml2js').parseString;
  * The Yamaha Module Constructor.
  * @constructor
  * @param {string} ip - The ip of the yamaha receiver.
+ * @param {number} responseDelay - The delay of the response for put commands, in seconds - defaults to 1. Better than polling...
+ *
  */
-function Yamaha(ip) 
+function Yamaha(ip, responseDelay) 
 {
-    this.ip = ip;
+	if (typeof responseDelay == 'string' || responseDelay instanceof String) responseDelay = parseInt(responseDelay);
+	if (!responseDelay) responseDelay = 1;
+   	this.ip = ip;
+    this.responseDelay = responseDelay;
 }
 
 
@@ -65,6 +70,7 @@ Yamaha.prototype.switchToFavoriteNumber = function(number){
 };
 
 Yamaha.prototype.SendXMLToReceiver= function(xml){
+	var self = this;
 	var d = deferred();
 	var promise = request.post(
 	    {
@@ -74,7 +80,18 @@ Yamaha.prototype.SendXMLToReceiver= function(xml){
 		},
 	    function (error, response, body) {
 	        if (!error && response.statusCode == 200) {
-	            d.resolve(body);
+	        	isPutCommand = xml.indexOf("cmd=\"PUT\"">=0);
+	        	if (isPutCommand) {
+	        		console.log("WAAAA1");
+	        		// d.resolve(body);
+	        		setTimeout(function(){
+	        			d.resolve(body);
+	        		}, self.responseDelay*1000);
+	        	}else{
+	        		console.log("WAAAA12");
+	        		d.resolve(body);
+	        	}
+	            
 	        }else{
 	        	if (error) d.reject(error);
 	        	else d.reject(response.statusCode);	
@@ -94,8 +111,6 @@ Yamaha.prototype.getColor = function()
 {
     return "The receiver is blue";
 };
-
-
 
 Yamaha.prototype.getBasicInfo = function(){
 	var d = deferred();
@@ -129,6 +144,7 @@ Yamaha.prototype.getSystemConfig = function(){
 Yamaha.prototype.getAvailableInputs = function(){
 	var self = this;
 	var d = deferred();
+	console.log("WAAAA2");
 	self.getSystemConfig().done(function(info){
 		var inputs = [];
 		var inputsXML = info.YAMAHA_AV.System[0].Config[0].Name[0].Input[0];
@@ -205,10 +221,8 @@ Yamaha.prototype.switchToWebRadioWithName = function(name){
 
 };
 
-
-
-var yamaha = new Yamaha("192.168.0.25");
-yamaha.getAvailableInputs();
+// var yamaha = new Yamaha("192.168.0.25");
+// yamaha.getAvailableInputs();
 // yamaha.volumeUp("35");
 // yamaha.switchToFavoriteNumber(1);
 
@@ -220,3 +234,6 @@ function delay(delayInS, callAfterDelay){
 		}, delayInS*1000);
 	};
 }
+
+
+module.exports = Yamaha;

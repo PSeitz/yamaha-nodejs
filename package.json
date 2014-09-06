@@ -8,9 +8,11 @@
     "request": "~2.40.0",
     "xml2js": "~0.4.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "~1.9.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
