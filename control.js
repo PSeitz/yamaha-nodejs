@@ -82,13 +82,10 @@ Yamaha.prototype.SendXMLToReceiver= function(xml){
 	        if (!error && response.statusCode == 200) {
 	        	isPutCommand = xml.indexOf("cmd=\"PUT\"">=0);
 	        	if (isPutCommand) {
-	        		console.log("WAAAA1");
-	        		// d.resolve(body);
 	        		setTimeout(function(){
 	        			d.resolve(body);
 	        		}, self.responseDelay*1000);
 	        	}else{
-	        		console.log("WAAAA12");
 	        		d.resolve(body);
 	        	}
 	            
@@ -113,52 +110,26 @@ Yamaha.prototype.getColor = function()
 };
 
 Yamaha.prototype.getBasicInfo = function(){
-	var d = deferred();
+
 	var command = '<YAMAHA_AV cmd="GET"><Main_Zone><Basic_Status>GetParam</Basic_Status></Main_Zone></YAMAHA_AV>';
-	this.SendXMLToReceiver(command).done(function(xmlresult){
+	return getPromiseWithSuccessCallback(this.SendXMLToReceiver(command), function(xmlresult, promise){
 		parseString(xmlresult, function (err, info) {
 			enrichBasicInfo(info);
-			d.resolve(info);
+			promise.resolve(info);
 		});
-	}, function (err) {
-		d.reject(err);
 	});
-	return d.promise;
+
 };
 
 
 Yamaha.prototype.getSystemConfig = function(){
-	var d = deferred();
 	var command = '<YAMAHA_AV cmd="GET"><System><Config>GetParam</Config></System></YAMAHA_AV>';
-	this.SendXMLToReceiver(command).done(function(xmlresult){
+	return getPromiseWithSuccessCallback(this.SendXMLToReceiver(command), function(xmlresult, promise){
 		parseString(xmlresult, function (err, info) {
-			d.resolve(info);
+			promise.resolve(info);
 		});
-	}, function (err) {
-		d.reject(err);
 	});
-	return d.promise;
 };
-
-
-Yamaha.prototype.getAvailableInputs = function(){
-	var self = this;
-	var d = deferred();
-	console.log("WAAAA2");
-	self.getSystemConfig().done(function(info){
-		var inputs = [];
-		var inputsXML = info.YAMAHA_AV.System[0].Config[0].Name[0].Input[0];
-		for (var prop in inputsXML) {
-			inputs.push(inputsXML[prop][0]);
-		}
-		d.resolve(inputs);
-	}, function (err) {
-		d.reject(err);
-	});
-	return d.promise;
-};
-
-
 
 function enrichBasicInfo(basicInfo){
 
@@ -169,9 +140,51 @@ function enrichBasicInfo(basicInfo){
 	basicInfo.isMuted = function(){
 		return basicInfo.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Volume[0].Mute[0] !== "Off";
 	};
-	
+
+	basicInfo.isOn = function(){
+		return basicInfo.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Power_Control[0].Power[0] === "On";
+	};
+
+	basicInfo.isOff = function(){
+		return !basicInfo.isOn();
+	};
 
 }
+
+Yamaha.prototype.isOn = function(){
+	return getPromiseWithSuccessCallback(this.getBasicInfo(), function(result, promise){
+		promise.resolve(result.isOn());
+	});
+};
+
+Yamaha.prototype.isOff = function(){
+	return getPromiseWithSuccessCallback(this.getBasicInfo(), function(result, promise){
+		promise.resolve(result.isOff());
+	});
+
+};
+
+function getPromiseWithSuccessCallback(origPromise, sucess){
+	var d = deferred();
+	origPromise.done(function(result){
+		sucess(result, d);
+	}, d.reject);
+
+	return d.promise;
+}
+
+Yamaha.prototype.getAvailableInputs = function(){
+	return getPromiseWithSuccessCallback(this.getSystemConfig(), function(info, d){
+		var inputs = [];
+		var inputsXML = info.YAMAHA_AV.System[0].Config[0].Name[0].Input[0];
+		for (var prop in inputsXML) {
+			inputs.push(inputsXML[prop][0]);
+		}
+		d.resolve(inputs);
+	});
+};
+
+
 
 
 Yamaha.prototype.adjustVolumeBy = function(by){

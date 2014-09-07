@@ -1,21 +1,6 @@
-var assert = require("assert");
-var expect = require('chai').expect;
 var Yamaha = require("./control.js");
+var yamaha = new Yamaha("192.168.0.25");
 
-
-describe('Yamaha-API', function() {
-
-	it('should create a yamaha object', function() {
-		var yamaha = new Yamaha("192.168.0.25");
-
-	});
-
-	it('16 Inputs', function(done) {
-		var yamaha = new Yamaha("192.168.0.25");
-		yamaha.getAvailableInputs().done(function(inputs){
-			expect(inputs).to.have.length(16);
-			done();
-		});
-	});
-
+yamaha.isOn().done(function(result){
+	console.log(result);
 });
