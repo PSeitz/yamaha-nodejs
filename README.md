@@ -3,6 +3,21 @@ Yamaha-Network-API
 
 A node module to control your yamaha receiver
 
+## Example
+
+    var YamahaAPI = require("Yamaha-Network-API");
+    var yamaha = new YamahaAPI("192.168.0.100");
+    yamaha.powerOn().done(function(){
+		console.log("powerOn");
+		yamaha.setMainInputTo("NET RADIO").done( function(){
+			console.log("Switched to Net Radio");
+			yamaha.selectWebRadioListWithNumber(1).done(function(){
+				console.log("Selected Favorites");
+				yamaha.selectWebRadioListWithNumber(1).done(function(){});
+			});
+
+		});
+	});
 
 ## Methods
     var yamaha = new Yamaha("192.168.0.100")
