@@ -20,7 +20,7 @@ describe('Yamaha-API', function() {
 
 
 	it('should be turned on', function(done) {
-		var yamaha = new Yamaha("192.168.0.25", .5);
+		var yamaha = new Yamaha("192.168.0.25", 0.5);
 		yamaha.powerOn().done(function(inputs){
 			yamaha.isOn().done(function(result){
 				expect(result).to.be.true;
@@ -28,6 +28,7 @@ describe('Yamaha-API', function() {
 			});
 			
 		});
+
 	});
 
 });

@@ -20,7 +20,6 @@ function Yamaha(ip, responseDelay)
     this.responseDelay = responseDelay;
 }
 
-
 Yamaha.prototype.powerOn = function(to){
 	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Power_Control><Power>On</Power></Power_Control></Main_Zone></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
@@ -114,13 +113,45 @@ Yamaha.prototype.getBasicInfo = function(){
 	var command = '<YAMAHA_AV cmd="GET"><Main_Zone><Basic_Status>GetParam</Basic_Status></Main_Zone></YAMAHA_AV>';
 	return getPromiseWithSuccessCallback(this.SendXMLToReceiver(command), function(xmlresult, promise){
 		parseString(xmlresult, function (err, info) {
-			enrichBasicInfo(info);
+			enrichBasicStatus(info);
 			promise.resolve(info);
 		});
 	});
 
 };
 
+
+function enrichBasicStatus(basicStatus){
+
+	basicStatus.getVolume = function(){
+		return parseInt(basicStatus.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Volume[0].Lvl[0].Val[0]);
+	};
+
+	basicStatus.isMuted = function(){
+		return basicStatus.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Volume[0].Mute[0] !== "Off";
+	};
+
+	basicStatus.isOn = function(){
+		return basicStatus.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Power_Control[0].Power[0] === "On";
+	};
+
+	basicStatus.isOff = function(){
+		return !basicStatus.isOn();
+	};
+
+	basicStatus.getCurrentInput = function(){
+		return basicStatus.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Input[0].Input_Sel[0];
+	};
+
+	basicStatus.isPartyModeEnabled = function(){
+		return basicStatus.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Party_Info[0] === "On";
+	};
+
+	basicStatus.isPureDirectEnabled = function(){
+		return basicStatus.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Sound_Video[0].Pure_Direct[0].Mode[0] === "On";
+	};
+
+}
 
 Yamaha.prototype.getSystemConfig = function(){
 	var command = '<YAMAHA_AV cmd="GET"><System><Config>GetParam</Config></System></YAMAHA_AV>';
@@ -131,25 +162,6 @@ Yamaha.prototype.getSystemConfig = function(){
 	});
 };
 
-function enrichBasicInfo(basicInfo){
-
-	basicInfo.getVolume = function(){
-		return parseInt(basicInfo.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Volume[0].Lvl[0].Val[0]);
-	};
-
-	basicInfo.isMuted = function(){
-		return basicInfo.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Volume[0].Mute[0] !== "Off";
-	};
-
-	basicInfo.isOn = function(){
-		return basicInfo.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Power_Control[0].Power[0] === "On";
-	};
-
-	basicInfo.isOff = function(){
-		return !basicInfo.isOn();
-	};
-
-}
 
 Yamaha.prototype.isOn = function(){
 	return getPromiseWithSuccessCallback(this.getBasicInfo(), function(result, promise){
@@ -160,6 +172,13 @@ Yamaha.prototype.isOn = function(){
 Yamaha.prototype.isOff = function(){
 	return getPromiseWithSuccessCallback(this.getBasicInfo(), function(result, promise){
 		promise.resolve(result.isOff());
+	});
+
+};
+
+Yamaha.prototype.getCurrentInput = function(){
+	return getPromiseWithSuccessCallback(this.getBasicInfo(), function(result, promise){
+		promise.resolve(result.getCurrentInput());
 	});
 
 };
