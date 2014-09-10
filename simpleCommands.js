@@ -3,6 +3,9 @@ var deferred = require('deferred');
 var parseString = require('xml2js').parseString;
 
 
+//<YAMAHA_AV cmd="GET"><USB><List_Info>GetParam</List_Info></USB></YAMAHA_AV>
+//<YAMAHA_AV cmd="GET"><USB><Play_Info>GetParam</Play_Info></USB></YAMAHA_AV>
+
 // The Module Constructor, needs the ip as parameter : e.g. new Yamaha("192.168.0.15")
 
 /**
@@ -49,24 +52,7 @@ Yamaha.prototype.setMainInputTo = function(to){
 	return this.SendXMLToReceiver(command);
 };
 
-// Navigates and selects the #number of the webradio favorites
-Yamaha.prototype.switchToFavoriteNumber = function(number){
-	var self = this;
-	self.powerOn().done(delay(2,function(){
 
-		console.log("powerOn");
-		self.setMainInputTo("NET RADIO").done(delay(2, function(){
-			console.log("NET RADIO");
-			self.selectWebRadioListWithNumber(1).done(delay(2, function(){
-				console.log("Selected Favorites");
-				self.selectWebRadioListWithNumber(number).done(function(){
-					console.log("Callback Hell accomplished");
-				});
-			}));
-
-		}));
-	}));
-};
 
 Yamaha.prototype.SendXMLToReceiver= function(xml){
 	var self = this;
@@ -218,21 +204,31 @@ Yamaha.prototype.adjustVolumeBy = function(by){
 
 // <YAMAHA_AV cmd="PUT"><NET_RADIO><List_Control><Cursor>Return</Cursor></List_Control></NET_RADIO></YAMAHA_AV>
 
-// <YAMAHA_AV cmd="GET"><NET_RADIO><List_Info>GetParam</List_Info></NET_RADIO></YAMAHA_AV>
-
-Yamaha.prototype.selectWebRadioListWithNumber = function(number){
-	var command = '<YAMAHA_AV cmd="PUT"><NET_RADIO><List_Control><Direct_Sel>Line_'+number+'</Direct_Sel></List_Control></NET_RADIO></YAMAHA_AV>';
+Yamaha.prototype.selectList = function(name, number){
+	var command = '<YAMAHA_AV cmd="PUT"><'+name+'><List_Control><Direct_Sel>Line_'+number+'</Direct_Sel></List_Control></'+name+'></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
 
+Yamaha.prototype.getList = function(name){
+	var command = '<YAMAHA_AV cmd="GET"><'+name+'><List_Info>GetParam</List_Info></'+name+'></YAMAHA_AV>';
+	return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.selectUSBListWithNumber = function(number){
+	return this.selectList("USB", number);
+};
+
+
+Yamaha.prototype.selectWebRadioListWithNumber = function(number){
+	return this.selectList("NET_RADIO", number);
+};
 
 Yamaha.prototype.setWebRadioToChannel = function(channel){
 	return this.selectWebRadioListWithNumber(channel);
 };
 
 Yamaha.prototype.getWebRadioChannels = function(){
-	var command = '<YAMAHA_AV cmd="GET"><NET_RADIO><List_Info>GetParam</List_Info></NET_RADIO></YAMAHA_AV>';
-	return this.SendXMLToReceiver(command);
+	return this.getList("NET_RADIO");
 };
 
 Yamaha.prototype.switchToWebRadioWithName = function(name){
