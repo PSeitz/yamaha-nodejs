@@ -190,8 +190,6 @@ Yamaha.prototype.getAvailableInputs = function(){
 };
 
 
-
-
 Yamaha.prototype.adjustVolumeBy = function(by){
 	if (typeof by == 'string' || by instanceof String) by = parseInt(by);
 	var self = this;
@@ -204,29 +202,84 @@ Yamaha.prototype.adjustVolumeBy = function(by){
 
 // <YAMAHA_AV cmd="PUT"><NET_RADIO><List_Control><Cursor>Return</Cursor></List_Control></NET_RADIO></YAMAHA_AV>
 
-Yamaha.prototype.selectList = function(name, number){
-	var command = '<YAMAHA_AV cmd="PUT"><'+name+'><List_Control><Direct_Sel>Line_'+number+'</Direct_Sel></List_Control></'+name+'></YAMAHA_AV>';
+Yamaha.prototype.selectListItem = function(listname, number){
+	var command = '<YAMAHA_AV cmd="PUT"><'+listname+'><List_Control><Direct_Sel>Line_'+number+'</Direct_Sel></List_Control></'+listname+'></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
 
 Yamaha.prototype.getList = function(name){
 	var command = '<YAMAHA_AV cmd="GET"><'+name+'><List_Info>GetParam</List_Info></'+name+'></YAMAHA_AV>';
-	return this.SendXMLToReceiver(command);
+	return getPromiseWithSuccessCallback(this.SendXMLToReceiver(command), function(xmlresult, promise){
+		parseString(xmlresult, function (err, info) {
+			enrichListInfo(info, name);
+			promise.resolve(info);
+		});
+	});
 };
 
-Yamaha.prototype.selectUSBListWithNumber = function(number){
-	return this.selectList("USB", number);
+Yamaha.prototype.isMenuReady = function(name){
+	var self = this;
+	return getPromiseWithSuccessCallback(self.getList(name), function(result, promise){
+		promise.resolve(result.isReady());
+	});
 };
 
 
-Yamaha.prototype.selectWebRadioListWithNumber = function(number){
-	return this.selectList("NET_RADIO", number);
+function enrichListInfo(listInfo, listname){
+
+	listInfo.isReady = function(){
+		return !listInfo.isBusy();
+	};
+
+	listInfo.isBusy = function(){
+		return listInfo.YAMAHA_AV[listname][0].List_Info[0].Menu_Status[0] === "Busy";
+	};
+
+}
+
+
+Yamaha.prototype.whenMenuReady = function(name){
+	var self = this;
+
+	var d = deferred();
+	origPromise.done(function(result){
+		sucess(result, d);
+	}, d.reject);
+
+	var tries = 0;
+
+	var interval = setInterval(function(){
+
+		self.isMenuReady(name).done(function(result){
+			if (result.isReady()){
+				clearInterval(interval);
+				promise.resolve(result.isReady());
+			}
+			tries++;
+			if (tries > 200) promise.reject("Timeout");
+			
+		});
+
+	}, 100);
+
+	return d.promise;
+};
+
+
+Yamaha.prototype.selectUSBListItem = function(number){
+	return this.selectListItem("USB", number);
+};
+
+
+Yamaha.prototype.selectWebRadioListItem = function(number){
+	return this.selectListItem("NET_RADIO", number);
 };
 
 Yamaha.prototype.setWebRadioToChannel = function(channel){
-	return this.selectWebRadioListWithNumber(channel);
+	return this.selectWebRadioListItem(channel);
 };
 
+//TODO: XML CONVERT
 Yamaha.prototype.getWebRadioChannels = function(){
 	return this.getList("NET_RADIO");
 };
