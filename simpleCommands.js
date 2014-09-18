@@ -242,25 +242,26 @@ Yamaha.prototype.whenMenuReady = function(name){
 	var self = this;
 
 	var d = deferred();
-	origPromise.done(function(result){
-		sucess(result, d);
-	}, d.reject);
+	// origPromise.done(function(result){
+	// 	sucess(result, d);
+	// }, d.reject);
 
 	var tries = 0;
 
 	var interval = setInterval(function(){
-
+		console.log("Checking");
 		self.isMenuReady(name).done(function(result){
-			if (result.isReady()){
+			console.log(result);
+			if (result){
 				clearInterval(interval);
-				promise.resolve(result.isReady());
+				d.resolve(true);
 			}
 			tries++;
-			if (tries > 200) promise.reject("Timeout");
+			if (tries > 40) d.reject("Timeout");
 			
 		});
 
-	}, 100);
+	}, 500);
 
 	return d.promise;
 };

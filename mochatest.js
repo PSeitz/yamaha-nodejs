@@ -32,29 +32,40 @@ describe('Yamaha-API', function() {
 	});
 
 
-	it('should switch to the webradio favorites and wait to be ready', function(done) {
-		var yamaha = new Yamaha("192.168.0.25", 0.5);
-
-		yamaha.selectWebRadioListItem(1).done(function() {
-			console.log("Selected Favorites");
-
-			yamaha.whenMenuReady().done(function(){
-
-			});
-
-			yamaha.selectWebRadioListItem(config.selectWebRadioFavoriteChannel).done(function() {});
-		});
-
-		yamaha.powerOn().done(function(inputs){
-			yamaha.isOn().done(function(result){
-				
-			});
-
-			expect(result).to.be.true;
-				done();
+	// it('should switch to the webradio favorites and wait to be ready', function(done) {
+	// 	var yamaha = new Yamaha("192.168.0.25", 0.5);
+	// 	yamaha.selectWebRadioListItem(1).done(function(inputs){
+	// 		yamaha.whenMenuReady().done(function(result){
+	// 			expect(result).to.be.true;
+	// 			done();
+	// 		});
 			
-		});
+	// 	});
 
-	});
+	// });
+
+	// it('should switch to the webradio favorites and wait to be ready', function(done) {
+	// 	var yamaha = new Yamaha("192.168.0.25", 0.5);
+
+	// 	yamaha.selectWebRadioListItem(1).done(function() {
+	// 		yamaha.whenMenuReady().done(function(){
+	// 			console.log("Ready");
+	// 			expect(true).to.be.true;
+	// 			done();
+	// 		});
+	// 		// yamaha.selectWebRadioListItem(config.selectWebRadioFavoriteChannel).done(function() {});
+	// 	});
+
+	// 	// yamaha.powerOn().done(function(inputs){
+	// 	// 	yamaha.isOn().done(function(result){
+				
+	// 	// 	});
+
+	// 	// 	expect(result).to.be.true;
+	// 	// 		done();
+			
+	// 	// });
+
+	// });
 
 });
