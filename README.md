@@ -4,7 +4,7 @@ Yamaha-Network-API
 A node module to control your yamaha receiver
 
 ## Example
-
+```javascript
     var YamahaAPI = require("Yamaha-Network-API");
     var yamaha = new YamahaAPI("192.168.0.100");
     yamaha.powerOn().done(function(){
@@ -18,8 +18,9 @@ A node module to control your yamaha receiver
 
 		});
 	});
-
+```
 ## Methods
+```javascript
     var yamaha = new Yamaha("192.168.0.100")
     yamaha.powerOff()
     yamaha.setVolumeTo()
@@ -38,10 +39,11 @@ A node module to control your yamaha receiver
     yamaha.setWebRadioToChannel()
     yamaha.getWebRadioChannels()
     yamaha.switchToWebRadioWithName()
-
+```
 ## Deferreds
 All these methods return a promise:
-
+```javascript
     yamaha.isOn().done(function(result){
       console.log("Receiver is:"+result);
     })
+```
