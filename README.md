@@ -35,6 +35,8 @@ A node module to control your yamaha receiver
     //Switch Input
     yamaha.setMainInputTo("NET RADIO")
     
+    //Basic
+    yamaha.SendXMLToReceiver()
     
     //Get Info
     yamaha.getBasicInfo()
@@ -42,7 +44,7 @@ A node module to control your yamaha receiver
     yamaha.getAvailableInputs()
     yamaha.isMenuReady("NET_RADIO")
     
-    // The Yamaha reveiver is stateful. Commands only work work if the receiver is in the right state.
+    // The Yamaha reveiver is stateful. Some commands only work work if the receiver is in the right state.
     // E.g. to get web radio channels, the "NET RADIO" input has to be selected.
     
     // Single Commands
@@ -53,8 +55,6 @@ A node module to control your yamaha receiver
     yamaha.selectWebRadioListWithNumber()
     yamaha.switchToFavoriteNumber() 
     
-    //Basic
-    yamaha.SendXMLToReceiver()
     
 ```
 ## Deferreds
