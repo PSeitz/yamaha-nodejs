@@ -1,6 +1,6 @@
 {
   "name": "Yamaha-Network-API",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "An API to control your YAMAHA Receiver written in nodejs",
   "main": "yamaha.js",
   "dependencies": {
