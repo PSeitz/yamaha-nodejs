@@ -2,11 +2,12 @@
   "name": "Yamaha-Network-API",
   "version": "0.3.3",
   "description": "An API to control your YAMAHA Receiver written in nodejs",
-  "main": "simpleCommands.js",
+  "main": "yamaha.js",
   "dependencies": {
     "deferred": "~0.7.1",
     "request": "~2.40.0",
-    "xml2js": "~0.4.4"
+    "xml2js": "~0.4.4",
+    "async": "~0.9.0"
   },
   "devDependencies": {
     "chai": "~1.9.1"

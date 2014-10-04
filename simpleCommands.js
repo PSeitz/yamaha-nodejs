@@ -17,15 +17,37 @@ var parseString = require('xml2js').parseString;
  */
 function Yamaha(ip, responseDelay) 
 {
-	if (typeof responseDelay == 'string' || responseDelay instanceof String) responseDelay = parseInt(responseDelay);
-	if (!responseDelay) responseDelay = 1;
-   	this.ip = ip;
-    this.responseDelay = responseDelay;
+	// if (typeof responseDelay == 'string' || responseDelay instanceof String) responseDelay = parseInt(responseDelay);
+	// if (!responseDelay) responseDelay = 1;
+ //   	this.ip = ip;
+ //    this.responseDelay = responseDelay;
 }
 
 Yamaha.prototype.powerOn = function(to){
-	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Power_Control><Power>On</Power></Power_Control></Main_Zone></YAMAHA_AV>';
-	return this.SendXMLToReceiver(command);
+
+	var self = this;
+
+	return getPromiseWithSuccessCallback(self.isOn(), function(isOn, promise){
+
+		if (isOn) {
+			promise.resolve(true);
+			return;
+		}
+
+		var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Power_Control><Power>On</Power></Power_Control></Main_Zone></YAMAHA_AV>';
+		return self.SendXMLToReceiver(command).done(function(xmlresult){
+
+			//TODO : CHECK return value
+			// parseString(xmlresult, function (err, info) {
+			// 	enrichBasicStatus(info);
+			// 	promise.resolve(info);
+			// });
+
+			promise.resolve(true);
+		});
+	});
+
+
 };
 
 Yamaha.prototype.powerOff = function(to){
@@ -45,6 +67,16 @@ Yamaha.prototype.volumeUp = function(by){
 
 Yamaha.prototype.volumeDown= function(by){
 	return this.adjustVolumeBy(-by);
+};
+
+Yamaha.prototype.adjustVolumeBy = function(by){
+	if (typeof by == 'string' || by instanceof String) by = parseInt(by);
+	var self = this;
+	var d = deferred();
+	self.getBasicInfo().done(function(basicInfo){
+		self.setVolumeTo(basicInfo.getVolume()+by).done(d.resolve);
+	});
+	return d.promise;
 };
 
 Yamaha.prototype.setMainInputTo = function(to){
@@ -190,16 +222,6 @@ Yamaha.prototype.getAvailableInputs = function(){
 };
 
 
-Yamaha.prototype.adjustVolumeBy = function(by){
-	if (typeof by == 'string' || by instanceof String) by = parseInt(by);
-	var self = this;
-	var d = deferred();
-	self.getBasicInfo().done(function(basicInfo){
-		self.setVolumeTo(basicInfo.getVolume()+by).done(d.resolve);
-	});
-	return d.promise;
-};
-
 // <YAMAHA_AV cmd="PUT"><NET_RADIO><List_Control><Cursor>Return</Cursor></List_Control></NET_RADIO></YAMAHA_AV>
 
 Yamaha.prototype.selectListItem = function(listname, number){
@@ -227,8 +249,13 @@ Yamaha.prototype.isMenuReady = function(name){
 
 function enrichListInfo(listInfo, listname){
 
+	listInfo.isSelectable = function(){
+		return listInfo.YAMAHA_AV[listname][0].List_Info[0].Current_List[0].Line_1[0].Attribute[0] !== "Unselectable";
+	};
+
 	listInfo.isReady = function(){
-		return !listInfo.isBusy();
+
+		return !listInfo.isBusy() && listInfo.isSelectable();
 	};
 
 	listInfo.isBusy = function(){
@@ -240,25 +267,24 @@ function enrichListInfo(listInfo, listname){
 
 Yamaha.prototype.whenMenuReady = function(name){
 	var self = this;
+	return self.when("isMenuReady",name, true);
+};
+
+
+Yamaha.prototype.when = function(YamahaCall, parameter, expectedReturnValue){
+	var self = this;
 
 	var d = deferred();
-	// origPromise.done(function(result){
-	// 	sucess(result, d);
-	// }, d.reject);
-
 	var tries = 0;
-
 	var interval = setInterval(function(){
 		console.log("Checking");
-		self.isMenuReady(name).done(function(result){
-			console.log(result);
-			if (result){
+		self[YamahaCall](parameter).done(function(result){
+			if (result == expectedReturnValue){
 				clearInterval(interval);
 				d.resolve(true);
 			}
 			tries++;
 			if (tries > 40) d.reject("Timeout");
-			
 		});
 
 	}, 500);
@@ -276,32 +302,8 @@ Yamaha.prototype.selectWebRadioListItem = function(number){
 	return this.selectListItem("NET_RADIO", number);
 };
 
-Yamaha.prototype.setWebRadioToChannel = function(channel){
-	return this.selectWebRadioListItem(channel);
-};
 
-//TODO: XML CONVERT
-Yamaha.prototype.getWebRadioChannels = function(){
-	return this.getList("NET_RADIO");
-};
 
-Yamaha.prototype.switchToWebRadioWithName = function(name){
-	var self = this;
-	self.setMainInputTo("NET RADIO").done(function(){
-
-		self.getWebRadioChannels().done(function(result){
-			console.log(result);
-			parseString(result, function (err, result) {
-			    console.dir(result);
-			});
-
-		}, function (err) {
-		  console.log("err "+err);
-		});
-
-	});
-
-};
 
 // var yamaha = new Yamaha("192.168.0.25");
 // yamaha.getAvailableInputs();
