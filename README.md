@@ -23,22 +23,39 @@ A node module to control your yamaha receiver
 ```javascript
     var yamaha = new Yamaha("192.168.0.100")
     yamaha.powerOff()
-    yamaha.setVolumeTo()
-    yamaha.volumeUp()
-    yamaha.volumeDown()
-    yamaha.setMainInputTo()
-    yamaha.switchToFavoriteNumber()
-    yamaha.SendXMLToReceiver()
-    yamaha.getBasicInfo()
-    yamaha.getSystemConfig()
+    yamaha.powerOn()
     yamaha.isOn()
     yamaha.isOff()
+    
+    //Volume
+    yamaha.setVolumeTo(-500)
+    yamaha.volumeUp(50)
+    yamaha.volumeDown(50)
+    
+    //Switch Input
+    yamaha.setMainInputTo("NET RADIO")
+    
+    
+    //Get Info
+    yamaha.getBasicInfo()
+    yamaha.getSystemConfig()
     yamaha.getAvailableInputs()
-    yamaha.adjustVolumeBy()
-    yamaha.selectWebRadioListWithNumber()
-    yamaha.setWebRadioToChannel()
+    yamaha.isMenuReady("NET_RADIO")
+    
+    // The Yamaha reveiver is stateful. Commands only work work if the receiver is in the right state.
+    // E.g. to get web radio channels, the "NET RADIO" input has to be selected.
+    
+    // Single Commands
     yamaha.getWebRadioChannels()
-    yamaha.switchToWebRadioWithName()
+    yamaha.setWebRadioToChannel()
+    
+    //Chained Commands, Ensure the receiver is in the right state
+    yamaha.selectWebRadioListWithNumber()
+    yamaha.switchToFavoriteNumber() 
+    
+    //Basic
+    yamaha.SendXMLToReceiver()
+    
 ```
 ## Deferreds
 All these methods return a promise:
