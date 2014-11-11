@@ -39,7 +39,7 @@ A node module to control your yamaha receiver
     yamaha.SendXMLToReceiver()
     
     //Get Info
-    yamaha.getBasicInfo().done(function(result){
+    yamaha.getBasicInfo().done(function(basicInfo){
 		basicInfo.getVolume();
 		basicInfo.isMuted();
 		basicInfo.isOn();
