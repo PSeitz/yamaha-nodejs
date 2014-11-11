@@ -40,6 +40,14 @@ A node module to control your yamaha receiver
     
     //Get Info
     yamaha.getBasicInfo()
+    	basicInfo.getVolume();
+	basicInfo.isMuted();
+	basicInfo.isOn();
+	basicInfo.isOff();
+	basicInfo.getCurrentInput();
+	basicInfo.isPartyModeEnabled();
+	basicInfo.isPureDirectEnabled();
+    
     yamaha.getSystemConfig()
     yamaha.getAvailableInputs()
     yamaha.isMenuReady("NET_RADIO")
