@@ -40,7 +40,7 @@ A node module to control your yamaha receiver
     
     //Get Info
     yamaha.getBasicInfo()
-            	basicInfo.getVolume();
+   		basicInfo.getVolume();
         	basicInfo.isMuted();
         	basicInfo.isOn();
         	basicInfo.isOff();
