@@ -3,6 +3,7 @@ Yamaha-NodeJs
 
 A node module to control your yamaha receiver
 
+### Install
 npm install yamaha-nodejs
 
 ## Example
