@@ -1,5 +1,5 @@
 {
-  "name": "Yamaha-Network-API",
+  "name": "yamaha-nodejs",
   "version": "0.4.0",
   "description": "An API to control your YAMAHA Receiver written in nodejs",
   "main": "yamaha.js",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PSeitz/Yamaha-Network-API.git"
+    "url": "https://github.com/PSeitz/yamaha-nodejs.git"
   },
   "keywords": [
     "yamaha",
