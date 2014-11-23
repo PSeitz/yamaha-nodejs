@@ -3,6 +3,8 @@ Yamaha-NodeJs
 
 A node module to control your yamaha receiver
 
+npm install yamaha-nodejs
+
 ## Example
 ```javascript
     var YamahaAPI = require("Yamaha-Network-API");
