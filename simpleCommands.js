@@ -80,10 +80,13 @@ Yamaha.prototype.adjustVolumeBy = function(by){
 };
 
 Yamaha.prototype.setMainInputTo = function(to){
-	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Input><Input_Sel>'+to+'</Input_Sel></Input></Main_Zone></YAMAHA_AV>';
-	return this.SendXMLToReceiver(command);
+	return this.setInputTo("Main_Zone", to);
 };
 
+Yamaha.prototype.setInputTo = function(zone, to){
+	var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Input><Input_Sel>'+to+'</Input_Sel></Input></'+zone+'></YAMAHA_AV>';
+	return this.SendXMLToReceiver(command);
+};
 
 
 Yamaha.prototype.SendXMLToReceiver= function(xml){
@@ -222,8 +225,6 @@ Yamaha.prototype.getAvailableInputs = function(){
 };
 
 
-// <YAMAHA_AV cmd="PUT"><NET_RADIO><List_Control><Cursor>Return</Cursor></List_Control></NET_RADIO></YAMAHA_AV>
-
 Yamaha.prototype.selectListItem = function(listname, number){
 	var command = '<YAMAHA_AV cmd="PUT"><'+listname+'><List_Control><Direct_Sel>Line_'+number+'</Direct_Sel></List_Control></'+listname+'></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
@@ -239,23 +240,15 @@ Yamaha.prototype.getList = function(name){
 	});
 };
 
-Yamaha.prototype.isMenuReady = function(name){
-	var self = this;
-	return getPromiseWithSuccessCallback(self.getList(name), function(result, promise){
-		promise.resolve(result.isReady());
-	});
-};
-
-
 function enrichListInfo(listInfo, listname){
 
-	listInfo.isSelectable = function(){
+	listInfo.hasSelectableItems = function(){
 		return listInfo.YAMAHA_AV[listname][0].List_Info[0].Current_List[0].Line_1[0].Attribute[0] !== "Unselectable";
 	};
 
 	listInfo.isReady = function(){
 
-		return !listInfo.isBusy() && listInfo.isSelectable();
+		return !listInfo.isBusy() && listInfo.hasSelectableItems();
 	};
 
 	listInfo.isBusy = function(){
@@ -265,11 +258,17 @@ function enrichListInfo(listInfo, listname){
 }
 
 
+Yamaha.prototype.isMenuReady = function(name){
+	var self = this;
+	return getPromiseWithSuccessCallback(self.getList(name), function(result, promise){
+		promise.resolve(result.isReady());
+	});
+};
+
 Yamaha.prototype.whenMenuReady = function(name){
 	var self = this;
 	return self.when("isMenuReady",name, true);
 };
-
 
 Yamaha.prototype.when = function(YamahaCall, parameter, expectedReturnValue){
 	var self = this;

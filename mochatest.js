@@ -7,10 +7,9 @@ describe('Yamaha-API', function() {
 
 	it('should create a yamaha object', function() {
 		var yamaha = new Yamaha("192.168.0.25");
-
 	});
 
-	it('16 Inputs', function(done) {
+	it('should return 16 Inputs', function(done) {
 		var yamaha = new Yamaha("192.168.0.25");
 		yamaha.getAvailableInputs().done(function(inputs){
 			expect(inputs).to.have.length(16);
@@ -41,13 +40,10 @@ describe('Yamaha-API', function() {
 
 	it('should switch to HDMI2', function(done) {
 		var yamaha = new Yamaha("192.168.0.25", 0.5);
-
 		yamaha.setMainInputTo("HDMI2").done(function() {
-			
 			yamaha.getCurrentInput().done(function(result){
 				expect(result).to.equal("HDMI2");
 				done();
-
 			});
 		});
 
@@ -55,13 +51,10 @@ describe('Yamaha-API', function() {
 
 	it('should switch to NET RADIO', function(done) {
 		var yamaha = new Yamaha("192.168.0.25", 0.5);
-
 		yamaha.setMainInputTo("NET RADIO").done(function() {
-			
 			yamaha.getCurrentInput().done(function(result){
 				expect(result).to.equal("NET RADIO");
 				done();
-
 			});
 		});
 
