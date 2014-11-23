@@ -1,4 +1,4 @@
-Yamaha-NodeJs
+Yamaha-nodejs
 ==================
 
 A node module to control your yamaha receiver
