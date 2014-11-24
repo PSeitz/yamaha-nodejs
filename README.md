@@ -8,7 +8,7 @@ npm install yamaha-nodejs
 
 ## Example
 ```javascript
-    var YamahaAPI = require("Yamaha-Network-API");
+    var YamahaAPI = require("yamaha-nodejs");
     var yamaha = new YamahaAPI("192.168.0.100");
     yamaha.powerOn().done(function(){
 		console.log("powerOn");
