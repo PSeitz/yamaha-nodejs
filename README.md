@@ -7,6 +7,7 @@ A node module to control your yamaha receiver
 npm install yamaha-nodejs
 
 ## Example
+*Note: to power on the yamaha, network standby has to be enabled*
 ```javascript
     var YamahaAPI = require("yamaha-nodejs");
     var yamaha = new YamahaAPI("192.168.0.100");
