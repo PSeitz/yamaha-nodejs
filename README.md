@@ -7,7 +7,6 @@ A node module to control your yamaha receiver. Tested with RX-V775, should workd
 npm install yamaha-nodejs
 
 ## Example
-*Note: to power on the yamaha, network standby has to be enabled*
 ```javascript
     var YamahaAPI = require("yamaha-nodejs");
     var yamaha = new YamahaAPI("192.168.0.100");
@@ -23,6 +22,10 @@ npm install yamaha-nodejs
 		});
 	});
 ```
+## Prerequisites
+* To power on the yamaha, network standby has to be enabled
+* The Yamaha reveiver is stateful. Some commands only work work if the receiver is in the right state. E.g. to get web radio channels, the "NET RADIO" input has to be selected.
+
 ## Methods
 ```javascript
     var yamaha = new Yamaha("192.168.0.100")
@@ -57,10 +60,7 @@ npm install yamaha-nodejs
     yamaha.getSystemConfig()
     yamaha.getAvailableInputs()
     yamaha.isMenuReady("NET_RADIO")
-    
-    // The Yamaha reveiver is stateful. Some commands only work work if the receiver is in the right state.
-    // E.g. to get web radio channels, the "NET RADIO" input has to be selected.
-    
+
     // Single Commands
     yamaha.getWebRadioChannels()
     yamaha.setWebRadioToChannel()
@@ -71,7 +71,7 @@ npm install yamaha-nodejs
     
     
 ```
-## Deferreds
+#### Deferreds
 All these methods return a promise:
 ```javascript
     yamaha.isOn().done(function(result){
