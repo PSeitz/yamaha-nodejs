@@ -1,7 +1,7 @@
 Yamaha-nodejs
 ==================
 
-A node module to control your yamaha receiver. Tested with RX-V775, should workd with all yamaha receivers with LAN.
+A node module to control your yamaha receiver. Tested with RX-V775, should workd with all yamaha receivers with a network interface.
 
 ### Install
 npm install yamaha-nodejs
@@ -61,11 +61,11 @@ npm install yamaha-nodejs
     yamaha.getAvailableInputs()
     yamaha.isMenuReady("NET_RADIO")
 
-    // Single Commands
+    // Single Commands, receiver has to be in the right state
     yamaha.getWebRadioChannels()
     yamaha.setWebRadioToChannel()
     
-    //Chained Commands, Ensure the receiver is in the right state
+    // Chained Commands, they ensure the receiver is in the right state
     yamaha.selectWebRadioListWithNumber()
     yamaha.switchToFavoriteNumber() 
     
