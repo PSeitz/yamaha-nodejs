@@ -1,7 +1,7 @@
 Yamaha-nodejs
 ==================
 
-A node module to control your yamaha receiver. Tested with RX-V775, should workd with all yamaha receivers with a network interface.
+A node module to control your yamaha receiver. Tested with RX-V775, should work with all yamaha receivers with a network interface.
 
 ### Install
 npm install yamaha-nodejs
