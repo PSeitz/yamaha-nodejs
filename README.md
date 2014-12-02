@@ -74,7 +74,7 @@ yamaha.switchToFavoriteNumber()
 #### Deferreds
 All these methods return a promise:
 ```javascript
-    yamaha.isOn().done(function(result){
-      console.log("Receiver is:"+result);
-    })
+yamaha.isOn().done(function(result){
+	console.log("Receiver is:"+result);
+})
 ```
