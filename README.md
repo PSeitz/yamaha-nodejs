@@ -8,19 +8,19 @@ npm install yamaha-nodejs
 
 ## Example
 ```javascript
-    var YamahaAPI = require("yamaha-nodejs");
-    var yamaha = new YamahaAPI("192.168.0.100");
-    yamaha.powerOn().done(function(){
-		console.log("powerOn");
-		yamaha.setMainInputTo("NET RADIO").done( function(){
-			console.log("Switched to Net Radio");
-			yamaha.selectWebRadioListWithNumber(1).done(function(){
-				console.log("Selected Favorites");
-				yamaha.selectWebRadioListWithNumber(1).done(function(){});
-			});
-
+var YamahaAPI = require("yamaha-nodejs");
+var yamaha = new YamahaAPI("192.168.0.100");
+yamaha.powerOn().done(function(){
+	console.log("powerOn");
+	yamaha.setMainInputTo("NET RADIO").done( function(){
+		console.log("Switched to Net Radio");
+		yamaha.selectWebRadioListWithNumber(1).done(function(){
+			console.log("Selected Favorites");
+			yamaha.selectWebRadioListWithNumber(1).done(function(){});
 		});
+
 	});
+});
 ```
 ## Prerequisites
 * To power on the yamaha, network standby has to be enabled
@@ -28,46 +28,46 @@ npm install yamaha-nodejs
 
 ## Methods
 ```javascript
-    var yamaha = new Yamaha("192.168.0.100")
-    yamaha.powerOff()
-    yamaha.powerOn()
-    yamaha.isOn()
-    yamaha.isOff()
-    
-    //Volume
-    yamaha.setVolumeTo(-500)
-    yamaha.volumeUp(50)
-    yamaha.volumeDown(50)
-    
-    //Switch Input
-    yamaha.setMainInputTo("NET RADIO")
-    
-    //Basic
-    yamaha.SendXMLToReceiver()
-    
-    //Get Info
-    yamaha.getBasicInfo().done(function(basicInfo){
-		basicInfo.getVolume();
-		basicInfo.isMuted();
-		basicInfo.isOn();
-		basicInfo.isOff();
-		basicInfo.getCurrentInput();
-		basicInfo.isPartyModeEnabled();
-		basicInfo.isPureDirectEnabled();
-    })
-		
-    
-    yamaha.getSystemConfig()
-    yamaha.getAvailableInputs()
-    yamaha.isMenuReady("NET_RADIO")
+var yamaha = new Yamaha("192.168.0.100")
+yamaha.powerOff()
+yamaha.powerOn()
+yamaha.isOn()
+yamaha.isOff()
 
-    // Single Commands, receiver has to be in the right state
-    yamaha.getWebRadioChannels()
-    yamaha.setWebRadioToChannel()
+//Volume
+yamaha.setVolumeTo(-500)
+yamaha.volumeUp(50)
+yamaha.volumeDown(50)
+
+//Switch Input
+yamaha.setMainInputTo("NET RADIO")
+
+//Basic
+yamaha.SendXMLToReceiver()
+
+//Get Info
+yamaha.getBasicInfo().done(function(basicInfo){
+    basicInfo.getVolume();
+    basicInfo.isMuted();
+    basicInfo.isOn();
+    basicInfo.isOff();
+    basicInfo.getCurrentInput();
+    basicInfo.isPartyModeEnabled();
+    basicInfo.isPureDirectEnabled();
+})
     
-    // Chained Commands, they ensure the receiver is in the right state
-    yamaha.selectWebRadioListWithNumber()
-    yamaha.switchToFavoriteNumber() 
+
+yamaha.getSystemConfig()
+yamaha.getAvailableInputs()
+yamaha.isMenuReady("NET_RADIO")
+
+// Single Commands, receiver has to be in the right state
+yamaha.getWebRadioChannels()
+yamaha.setWebRadioToChannel()
+
+// Chained Commands, they ensure the receiver is in the right state
+yamaha.selectWebRadioListWithNumber()
+yamaha.switchToFavoriteNumber() 
     
     
 ```
