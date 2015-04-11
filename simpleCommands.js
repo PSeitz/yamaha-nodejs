@@ -47,7 +47,6 @@ Yamaha.prototype.powerOn = function(to){
 		});
 	});
 
-
 };
 
 Yamaha.prototype.powerOff = function(to){
@@ -60,6 +59,7 @@ Yamaha.prototype.setVolumeTo = function(to){
 	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Volume><Lvl><Val>'+to+'</Val><Exp>1</Exp><Unit>dB</Unit></Lvl></Volume></Main_Zone></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
+Yamaha.prototype.setVolume = Yamaha.prototype.setVolumeTo;
 
 Yamaha.prototype.volumeUp = function(by){
 	return this.adjustVolumeBy(by);
@@ -87,7 +87,6 @@ Yamaha.prototype.setInputTo = function(zone, to){
 	var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Input><Input_Sel>'+to+'</Input_Sel></Input></'+zone+'></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
-
 
 Yamaha.prototype.SendXMLToReceiver= function(xml){
 	var self = this;
@@ -141,7 +140,6 @@ Yamaha.prototype.getBasicInfo = function(){
 
 };
 
-
 function enrichBasicStatus(basicStatus){
 
 	basicStatus.getVolume = function(){
@@ -171,7 +169,22 @@ function enrichBasicStatus(basicStatus){
 	basicStatus.isPureDirectEnabled = function(){
 		return basicStatus.YAMAHA_AV.Main_Zone[0].Basic_Status[0].Sound_Video[0].Pure_Direct[0].Mode[0] === "On";
 	};
+}
 
+
+// Add direct functions for basic info
+function addBasicInfoWrapper(basicInfo){
+	Yamaha.prototype[basicInfo] = function(){
+		return getPromiseWithSuccessCallback(this.getBasicInfo(), function(result, promise){
+			promise.resolve(result[basicInfo]());
+		});
+	};
+}
+//TODO: no list, take properties of basicStatus object
+var basicInfos = ["getVolume", "isMuted", "isOn", "isOff", "getCurrentInput","isPartyModeEnabled", "isPureDirectEnabled"];
+for (var i = 0; i < basicInfos.length; i++) {
+	var basicInfo = basicInfos[i];
+	addBasicInfoWrapper(basicInfo);
 }
 
 Yamaha.prototype.getSystemConfig = function(){
@@ -183,26 +196,6 @@ Yamaha.prototype.getSystemConfig = function(){
 	});
 };
 
-
-Yamaha.prototype.isOn = function(){
-	return getPromiseWithSuccessCallback(this.getBasicInfo(), function(result, promise){
-		promise.resolve(result.isOn());
-	});
-};
-
-Yamaha.prototype.isOff = function(){
-	return getPromiseWithSuccessCallback(this.getBasicInfo(), function(result, promise){
-		promise.resolve(result.isOff());
-	});
-
-};
-
-Yamaha.prototype.getCurrentInput = function(){
-	return getPromiseWithSuccessCallback(this.getBasicInfo(), function(result, promise){
-		promise.resolve(result.getCurrentInput());
-	});
-
-};
 
 function getPromiseWithSuccessCallback(origPromise, sucess){
 	var d = deferred();
@@ -223,7 +216,6 @@ Yamaha.prototype.getAvailableInputs = function(){
 		d.resolve(inputs);
 	});
 };
-
 
 Yamaha.prototype.selectListItem = function(listname, number){
 	var command = '<YAMAHA_AV cmd="PUT"><'+listname+'><List_Control><Direct_Sel>Line_'+number+'</Direct_Sel></List_Control></'+listname+'></YAMAHA_AV>';
@@ -254,6 +246,23 @@ function enrichListInfo(listInfo, listname){
 	listInfo.isBusy = function(){
 		return listInfo.YAMAHA_AV[listname][0].List_Info[0].Menu_Status[0] === "Busy";
 	};
+
+	listInfo.getMenuLayer = function(){
+		return listInfo.YAMAHA_AV[listname][0].List_Info[0].Menu_Layer[0];
+	};
+
+	listInfo.getMenuName = function(){
+		return listInfo.YAMAHA_AV[listname][0].List_Info[0].Menu_Name[0];
+	};
+
+	listInfo.getList = function(){
+		var list = listInfo.YAMAHA_AV[listname][0].List_Info[0].Menu_Name[0];
+		console.log(list);
+		// for (var i = 0; i < list.length; i++) {
+		// 	list[i]
+		// };
+	};
+
 
 }
 
@@ -291,32 +300,21 @@ Yamaha.prototype.when = function(YamahaCall, parameter, expectedReturnValue){
 	return d.promise;
 };
 
-
 Yamaha.prototype.selectUSBListItem = function(number){
 	return this.selectListItem("USB", number);
 };
-
 
 Yamaha.prototype.selectWebRadioListItem = function(number){
 	return this.selectListItem("NET_RADIO", number);
 };
 
-
-
-
-// var yamaha = new Yamaha("192.168.0.25");
-// yamaha.getAvailableInputs();
-// yamaha.volumeUp("35");
-// yamaha.switchToFavoriteNumber(1);
-
-// This is needed, because the yamaha has a stateful api - yeah ...
-function delay(delayInS, callAfterDelay){
-	return function(){
-		setTimeout(function(){
-			callAfterDelay();
-		}, delayInS*1000);
-	};
-}
+//TODO: More XML CONVERT
+Yamaha.prototype.getWebRadioList = function(){
+	return this.getList("NET_RADIO");
+};
+Yamaha.prototype.getUSBList = function(){
+	return this.getList("USB");
+};
 
 
 module.exports = Yamaha;

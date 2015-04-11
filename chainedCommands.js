@@ -6,7 +6,7 @@ function Yamaha()
 }
 
 // Navigates and selects the #number of the webradio favorites
-Yamaha.prototype.switchToFavoriteNumber = function(number){
+Yamaha.prototype.switchToFavoriteNumber = function(favoritelistname, number){
 	var self = this;
 	var d = deferred();
 	self.powerOn().done(function(){
@@ -16,26 +16,17 @@ Yamaha.prototype.switchToFavoriteNumber = function(number){
 					self.selectWebRadioListItem(number).done(d.resolve);
 				});
 			});
-
 		});
 	});
 	return d.promise;
 };
 
-Yamaha.prototype.setWebRadioToChannel = function(channel){
-	return this.selectWebRadioListItem(channel);
-};
-
-//TODO: XML CONVERT
-Yamaha.prototype.getWebRadioChannels = function(){
-	return this.getList("NET_RADIO");
-};
 
 Yamaha.prototype.switchToWebRadioWithName = function(name){
 	var self = this;
 	self.setMainInputTo("NET RADIO").done(function(){
 
-		self.getWebRadioChannels().done(function(result){
+		self.getWebRadioList().done(function(result){
 			console.log(result);
 			parseString(result, function (err, result) {
 			    console.dir(result);
