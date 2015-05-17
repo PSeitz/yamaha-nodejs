@@ -66,7 +66,6 @@ yamaha.getWebRadioChannels()
 yamaha.setWebRadioToChannel()
 
 // Chained Commands, they ensure the receiver is in the right state
-yamaha.selectWebRadioListWithNumber()
 yamaha.switchToFavoriteNumber() 
     
     
