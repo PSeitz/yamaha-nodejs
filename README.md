@@ -14,9 +14,9 @@ yamaha.powerOn().done(function(){
 	console.log("powerOn");
 	yamaha.setMainInputTo("NET RADIO").done( function(){
 		console.log("Switched to Net Radio");
-		yamaha.selectWebRadioListWithNumber(1).done(function(){
+		yamaha.selectWebRadioListItem(1).done(function(){
 			console.log("Selected Favorites");
-			yamaha.selectWebRadioListWithNumber(1).done(function(){});
+			yamaha.selectWebRadioListItem(1).done(function(){});
 		});
 
 	});
