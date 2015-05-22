@@ -77,3 +77,6 @@ yamaha.isOn().done(function(result){
 	console.log("Receiver is:"+result);
 })
 ```
+#### Execute Tests
+e.g.
+mocha mochatest.js --ip 192.168.0.25
