@@ -78,7 +78,6 @@ yamaha.isOn().done(function(result){
 })
 ```
 #### Execute Tests
-e.g.
 ```javascript
 mocha mochatest.js --ip 192.168.0.25
 ```
