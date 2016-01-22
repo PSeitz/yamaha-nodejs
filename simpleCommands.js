@@ -308,6 +308,11 @@ Yamaha.prototype.selectWebRadioListItem = function(number){
 	return this.selectListItem("NET_RADIO", number);
 };
 
+Yamaha.prototype.selectTunerPreset = function(number){
+	var command = '<YAMAHA_AV cmd="PUT"><Tuner><Play_Control><Preset><Preset_Sel>'+number+'</Preset_Sel></Preset></Play_Control></Tuner></YAMAHA_AV>';
+	return this.SendXMLToReceiver(command);
+};
+
 //TODO: More XML CONVERT
 Yamaha.prototype.getWebRadioList = function(){
 	return this.getList("NET_RADIO");
