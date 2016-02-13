@@ -49,6 +49,41 @@ Yamaha.prototype.powerOn = function(to){
 
 };
 
+Yamaha.prototype.muteOn = function(to){
+  var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Volume><Mute>On</Mute></Volume></Main_Zone></YAMAHA_AV>';
+  return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.muteOff = function(to){
+  var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Volume><Mute>Off</Mute></Volume></Main_Zone></YAMAHA_AV>';
+  return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.stop = function(to){
+  var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Play_Control><Playback>Stop</Playback></Play_Control></Main_Zone></YAMAHA_AV>';
+  return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.pause = function(to){
+  var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Play_Control><Playback>Pause</Playback></Play_Control></Main_Zone></YAMAHA_AV>';
+  return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.play = function(to){
+  var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Play_Control><Playback>Play</Playback></Play_Control></Main_Zone></YAMAHA_AV>';
+  return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.skip = function(to){
+  var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Play_Control><Playback>Skip Fwd</Playback></Play_Control></Main_Zone></YAMAHA_AV>';
+  return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.rewind = function(to){
+  var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Play_Control><Playback>Skip Rev</Playback></Play_Control></Main_Zone></YAMAHA_AV>';
+  return this.SendXMLToReceiver(command);
+};
+
 Yamaha.prototype.powerOff = function(to){
 	var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Power_Control><Power>Standby</Power></Power_Control></Main_Zone></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
