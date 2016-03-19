@@ -23,6 +23,16 @@ describe('Yamaha-API', function() {
         });
     });
 
+    it('should be double turned on', function(done) {
+        var yamaha = new Yamaha(yamaha_ip, 0.5);
+        yamaha.powerOn().done(function(on){
+            yamaha.isOn().done(function(result){
+                expect(result).to.be.true;
+                done();
+            });
+        });
+    });
+
 
     it('should return 16 Inputs', function(done) {
         var yamaha = new Yamaha(yamaha_ip);
@@ -117,6 +127,26 @@ describe('Yamaha-API', function() {
         var yamaha = new Yamaha(yamaha_ip, 0.5);
         yamaha.partyModeOff().done(function(on){
             yamaha.isPartyModeEnabled().done(function(result){
+                expect(result).to.be.false;
+                done();
+            });
+        });
+    });
+
+    it('should mute', function(done) {
+        var yamaha = new Yamaha(yamaha_ip, 0.5);
+        yamaha.muteOn().done(function(on){
+            yamaha.isMuted().done(function(result){
+                expect(result).to.be.true;
+                done();
+            });
+        });
+    });
+
+    it('should unmute', function(done) {
+        var yamaha = new Yamaha(yamaha_ip, 0.5);
+        yamaha.muteOff().done(function(on){
+            yamaha.isMuted().done(function(result){
                 expect(result).to.be.false;
                 done();
             });
