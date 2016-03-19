@@ -79,23 +79,23 @@ Yamaha.prototype.adjustVolumeBy = function(by){
 	return d.promise;
 };
 
-Yamaha.prototype.PartyModeOn = function(to){
+Yamaha.prototype.partyModeOn = function(to){
 	var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Mode>On</Mode></Party_Mode></System></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
 
-Yamaha.prototype.PartyModeOff = function(to){
+Yamaha.prototype.partyModeOff = function(to){
 	var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Mode>Off</Mode></Party_Mode></System></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
 
-Yamaha.prototype.PartyModeUp = function(to){
+Yamaha.prototype.partyModeUp = function(to){
 	// Increments all zones up equally
 	var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Volume><Lvl>Up</Lvl></Volume><</Party_Mode></System></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
 
-Yamaha.prototype.PartyModeDown = function(to){
+Yamaha.prototype.partyModeDown = function(to){
 	// Increments all zones down equally
 	var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Volume><Lvl>Down</Lvl></Volume><</Party_Mode></System></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
