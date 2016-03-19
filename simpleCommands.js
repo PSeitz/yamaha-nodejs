@@ -336,6 +336,18 @@ Yamaha.prototype.selectWebRadioListItem = function(number){
 	return this.selectListItem("NET_RADIO", number);
 };
 
+Yamaha.prototype.selectTunerPreset = function(number){
+	var command = '<YAMAHA_AV cmd="PUT"><Tuner><Play_Control><Preset><Preset_Sel>'+number+'</Preset_Sel></Preset></Play_Control></Tuner></YAMAHA_AV>';
+	return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.selectTunerFrequency = function(band, frequency){
+	var unit = band == "FM" ? "MHz" : "KHz"
+		, exp = band == "FM" ? 2 : 0
+		, command = '<YAMAHA_AV cmd="PUT"><Tuner><Play_Control><Tuning><Band>'+band+'</Band><Freq><'+band+'><Val>'+frequency+'</Val><Exp>'+exp+'</Exp><Unit>'+unit+'</Unit></'+band+'></Freq></Tuning></Play_Control></Tuner></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
 //TODO: More XML CONVERT
 Yamaha.prototype.getWebRadioList = function(){
 	return this.getList("NET_RADIO");
