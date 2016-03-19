@@ -79,11 +79,39 @@ Yamaha.prototype.adjustVolumeBy = function(by){
 	return d.promise;
 };
 
+Yamaha.prototype.PartyModeOn = function(to){
+	var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Mode>On</Mode></Party_Mode></System></YAMAHA_AV>';
+	return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.PartyModeOff = function(to){
+	var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Mode>Off</Mode></Party_Mode></System></YAMAHA_AV>';
+	return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.PartyModeUp = function(to){
+	// Increments all zones up equally
+	var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Volume><Lvl>Up</Lvl></Volume><</Party_Mode></System></YAMAHA_AV>';
+	return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.PartyModeDown = function(to){
+	// Increments all zones down equally
+	var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Volume><Lvl>Down</Lvl></Volume><</Party_Mode></System></YAMAHA_AV>';
+	return this.SendXMLToReceiver(command);
+};
+
 Yamaha.prototype.setMainInputTo = function(to){
 	return this.setInputTo("Main_Zone", to);
 };
 
 Yamaha.prototype.setInputTo = function(zone, to){
+	// replace numbers with zones, eg type "2","AV2" and it will change Zone 2 to Input AV2
+	zone = zone.replace("/^1", "Main_Zone");
+	zone = zone.replace("/^2", "Zone_2");
+	zone = zone.replace("/^3", "Zone_3");
+	zone = zone.replace("/^4", "Zone_4");
+
 	var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Input><Input_Sel>'+to+'</Input_Sel></Input></'+zone+'></YAMAHA_AV>';
 	return this.SendXMLToReceiver(command);
 };
