@@ -15,6 +15,7 @@ function Yamaha(ip, responseDelay)
 	if (!responseDelay) responseDelay = 1;
    	this.ip = ip;
     this.responseDelay = responseDelay;
+    this.pollingDelay = 500; // used for menu ready check, webradio e.g.
 }
 
 extend(Yamaha.prototype, simpleCommands.prototype);

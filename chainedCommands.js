@@ -1,5 +1,5 @@
-// var simpleCommands = require('./simpleCommands');
-var deferred = require('deferred');
+var Promise = require("bluebird");
+var xml2js = Promise.promisifyAll(require("xml2js"));
 
 function Yamaha() 
 {
@@ -8,32 +8,26 @@ function Yamaha()
 // Navigates and selects the #number of the webradio favorites
 Yamaha.prototype.switchToFavoriteNumber = function(favoritelistname, number){
 	var self = this;
-	var d = deferred();
-	self.powerOn().done(function(){
-		self.setMainInputTo("NET RADIO").done( function(){
-			self.selectWebRadioListItem(1).done(function(){
-				self.whenMenuReady("NET_RADIO").done(function(){
-					self.selectWebRadioListItem(number).done(d.resolve);
+	return self.powerOn().then(function(){
+		self.setMainInputTo("NET RADIO").then( function(){
+			self.selectWebRadioListItem(1).then(function(){
+				self.whenMenuReady("NET_RADIO").then(function(){
+					return self.selectWebRadioListItem(number);
 				});
 			});
 		});
 	});
-	return d.promise;
 };
 
-
+// unfinished - not working
 Yamaha.prototype.switchToWebRadioWithName = function(name){
 	var self = this;
-	self.setMainInputTo("NET RADIO").done(function(){
+	self.setMainInputTo("NET RADIO").then(function(){
 
-		self.getWebRadioList().done(function(result){
+		self.getWebRadioList().then(xml2js.parseStringAsync).then(function(result){
 			console.log(result);
-			parseString(result, function (err, result) {
-			    console.dir(result);
-			});
-
 		}, function (err) {
-		  console.log("err "+err);
+			console.log("err "+err);
 		});
 
 	});
