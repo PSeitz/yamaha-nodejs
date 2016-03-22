@@ -95,7 +95,7 @@ yamaha.switchToFavoriteNumber()
 ```
 
 #### Zones
-the zone parameter is optional, you can pass a number or a string
+The zone parameter is optional, you can pass a number or a string
 
 #### Promises
 All these methods return a promise:
