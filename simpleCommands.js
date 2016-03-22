@@ -137,15 +137,9 @@ Yamaha.prototype.SendXMLToReceiver= function(xml){
         uri: 'http://'+this.ip+'/YamahaRemoteControl/ctrl',
         body:xml
     }).delay(delay).then(function(response) {
-        if (!response.body && !isPutCommand) {
-            console.log("var1");
-            return Promise.reject(reponse);
-        }
         return response.body;
     }).catch(function(e) {
         console.log(e);
-        //Generic catch-the rest, error wasn't TypeError nor
-        //ReferenceError
     });
 
 };
