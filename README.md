@@ -10,13 +10,13 @@ npm install yamaha-nodejs
 ```javascript
 var YamahaAPI = require("yamaha-nodejs");
 var yamaha = new YamahaAPI("192.168.0.100");
-yamaha.powerOn().done(function(){
+yamaha.powerOn().then(function(){
 	console.log("powerOn");
-	yamaha.setMainInputTo("NET RADIO").done( function(){
+	yamaha.setMainInputTo("NET RADIO").then( function(){
 		console.log("Switched to Net Radio");
-		yamaha.selectWebRadioListItem(1).done(function(){
+		yamaha.selectWebRadioListItem(1).then(function(){
 			console.log("Selected Favorites");
-			yamaha.selectWebRadioListItem(1).done(function(){});
+			yamaha.selectWebRadioListItem(1).then(function(){});
 		});
 
 	});
