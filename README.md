@@ -29,24 +29,40 @@ yamaha.powerOn().done(function(){
 ## Methods
 ```javascript
 var yamaha = new Yamaha("192.168.0.100")
-yamaha.powerOff()
-yamaha.powerOn()
-yamaha.isOn()
-yamaha.isOff()
+yamaha.powerOff(zone)
+yamaha.powerOn(zone)
+yamaha.isOn(zone)
+yamaha.isOff(zone)
 
 //Volume
 yamaha.setVolumeTo(-500)
 yamaha.volumeUp(50)
 yamaha.volumeDown(50)
+yamaha.muteOn(zone)
+yamaha.muteOff(zone)
+
+//Playback
+yamaha.stop(zone)
+yamaha.pause(zone)
+yamaha.play(zone)
+yamaha.skip(zone)
+yamaha.rewind(zone)
 
 //Switch Input
+yamaha.setInputTo(input, zone)
 yamaha.setMainInputTo("NET RADIO")
+
+//Party Mode
+yamaha.partyModeOn()
+yamaha.partyModeOff()
+yamaha.partyModeUp()
+yamaha.partyModeDown()
 
 //Basic
 yamaha.SendXMLToReceiver()
 
 //Get Info
-yamaha.getBasicInfo().done(function(basicInfo){
+yamaha.getBasicInfo(zone).done(function(basicInfo){
     basicInfo.getVolume();
     basicInfo.isMuted();
     basicInfo.isOn();
@@ -55,25 +71,32 @@ yamaha.getBasicInfo().done(function(basicInfo){
     basicInfo.isPartyModeEnabled();
     basicInfo.isPureDirectEnabled();
 })
-    
 
 yamaha.getSystemConfig()
 yamaha.getAvailableInputs()
 yamaha.isMenuReady("NET_RADIO")
 
+// FM Tuner
+yamaha.selectTunerPreset(number)
+yamaha.selectTunerFrequency(band, frequency)
+
+//Select Menu Items
+yamaha.selectUSBListItem(number)
+yamaha.selectWebRadioListItem(number)
+
 // Single Commands, receiver has to be in the right state
-yamaha.getWebRadioChannels()
-yamaha.setWebRadioToChannel()
+yamaha.getWebRadioList()
+yamaha.selectWebRadioListItem(number)
 
 // Chained Commands, they ensure the receiver is in the right state
 yamaha.switchToFavoriteNumber() 
     
     
 ```
-#### Deferreds
+#### Promises
 All these methods return a promise:
 ```javascript
-yamaha.isOn().done(function(result){
+yamaha.isOn().then(function(result){
 	console.log("Receiver is:"+result);
 })
 ```
