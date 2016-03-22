@@ -49,7 +49,7 @@ yamaha.skip(zone)
 yamaha.rewind(zone)
 
 //Switch Input
-yamaha.setInputTo(input, zone)
+yamaha.setInputTo("USB", 2)
 yamaha.setMainInputTo("NET RADIO")
 
 //Party Mode
@@ -77,22 +77,26 @@ yamaha.getAvailableInputs()
 yamaha.isMenuReady("NET_RADIO")
 
 // FM Tuner
-yamaha.selectTunerPreset(number)
+yamaha.selectTunerPreset(1)
 yamaha.selectTunerFrequency(band, frequency)
 
 //Select Menu Items
-yamaha.selectUSBListItem(number)
-yamaha.selectWebRadioListItem(number)
+yamaha.selectUSBListItem(1)
+yamaha.selectWebRadioListItem(1)
 
 // Single Commands, receiver has to be in the right state
 yamaha.getWebRadioList()
-yamaha.selectWebRadioListItem(number)
+yamaha.selectWebRadioListItem(1)
 
 // Chained Commands, they ensure the receiver is in the right state
 yamaha.switchToFavoriteNumber() 
     
     
 ```
+
+#### Zones
+the zone parameter is optional, you can pass a number or a string
+
 #### Promises
 All these methods return a promise:
 ```javascript
