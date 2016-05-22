@@ -35,11 +35,24 @@ yamaha.isOn(zone)
 yamaha.isOff(zone)
 
 //Volume
-yamaha.setVolumeTo(-500)
+yamaha.setVolumeTo(-500, zone)
 yamaha.volumeUp(50)
 yamaha.volumeDown(50)
 yamaha.muteOn(zone)
 yamaha.muteOff(zone)
+
+//Extended Volume Settings
+yamaha.setBassTo(60)          //-60 to 60 (may depend on model)
+yamaha.setTrebleTo(60)        //-60 to 60 (may depend on model)
+yamaha.setSubwooferTrimTo(60) //-60 to 60 (may depend on model)
+yamaha.setDialogLiftTo(5)     //0 to 5 (may depend on model)
+yamaha.setDialogLevelTo(3)    //0 to 3 (may depend on model)
+yamaha.YPAOVolumeOn()
+yamaha.YPAOVolumeOff()
+yamaha.extraBassOn()
+yamaha.extraBassOff()
+yamaha.adaptiveDRCOn()
+yamaha.adaptiveDRCOff()
 
 //Playback
 yamaha.stop(zone)
@@ -70,8 +83,17 @@ yamaha.getBasicInfo(zone).done(function(basicInfo){
     basicInfo.getCurrentInput();
     basicInfo.isPartyModeEnabled();
     basicInfo.isPureDirectEnabled();
+    basicInfo.getBass();
+    basicInfo.getTreble();
+    basicInfo.getSubwooferTrim();
+    basicInfo.getDialogueLift();
+    basicInfo.getDialogueLevel();
+    basicInfo.getYPAOVolume();
+    basicInfo.getExtraBass();
+    basicInfo.getAdaptiveDRC();
 })
 
+yamaha.isHeadphoneConnected()
 yamaha.getSystemConfig()
 yamaha.getAvailableInputs()
 yamaha.isMenuReady("NET_RADIO")

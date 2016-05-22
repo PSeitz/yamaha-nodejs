@@ -128,6 +128,72 @@ Yamaha.prototype.setInputTo = function(to, zone){
     return this.SendXMLToReceiver(command);
 };
 
+Yamaha.prototype.setBassTo = function(to){
+    var zone = getZone(); //only available in Main Zone
+    var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Sound_Video><Tone><Bass><Val>'+to+'</Val><Exp>1</Exp><Unit>dB</Unit></Bass></Tone></Sound_Video></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.setTrebleTo = function(to){
+    var zone = getZone(); //only available in Main Zone
+    var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Sound_Video><Tone><Treble><Val>'+to+'</Val><Exp>1</Exp><Unit>dB</Unit></Treble></Tone></Sound_Video></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.setSubwooferTrimTo = function(to){
+    var zone = getZone(); //only available in Main Zone
+    var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Volume><Subwoofer_Trim><Val>'+to+'</Val><Exp>1</Exp><Unit>dB</Unit></Subwoofer_Trim></Volume></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.setDialogLiftTo = function(to){
+    var zone = getZone(); //only available in Main Zone
+    var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Sound_Video><Dialogue_Adjust><Dialogue_Lift>'+to+'</Dialogue_Lift></Dialogue_Adjust></Sound_Video></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.setDialogLevelTo = function(to){
+    var zone = getZone(); //only available in Main Zone
+    var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Sound_Video><Dialogue_Adjust><Dialogue_Lvl>'+to+'</Dialogue_Lvl></Dialogue_Adjust></Sound_Video></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.YPAOVolumeOn = function(){
+    var zone = getZone(); //only available in Main Zone
+    var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Sound_Video><YPAO_Volume>Auto</YPAO_Volume></Sound_Video></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.YPAOVolumeOff = function(){
+    var zone = getZone(); //only available in Main Zone
+    var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Sound_Video><YPAO_Volume>Off</YPAO_Volume></Sound_Video></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.extraBassOn = function(){
+    var zone = getZone(); //only available in Main Zone
+    var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Sound_Video><Extra_Bass>Auto</Extra_Bass></Sound_Video></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.extraBassOff = function(){
+    var zone = getZone(); //only available in Main Zone
+    var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Sound_Video><Extra_Bass>Off</Extra_Bass></Sound_Video></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.adaptiveDRCOn = function(){
+    var zone = getZone(); //only available in Main Zone
+    var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Sound_Video><Adaptive_DRC>Auto</Adaptive_DRC></Sound_Video></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.adaptiveDRCOff = function(){
+    var zone = getZone(); //only available in Main Zone
+    var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Sound_Video><Adaptive_DRC>Off</Adaptive_DRC></Sound_Video></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
 Yamaha.prototype.SendXMLToReceiver= function(xml){
 
     var isPutCommand = xml.indexOf("cmd=\"PUT\"">=0);
@@ -148,6 +214,23 @@ Yamaha.prototype.getColor = function()
 {
     return "The receiver is blue";
 };
+
+Yamaha.prototype.isHeadphoneConnected = function(){
+    //checks if a Headphone is connected, returns "Connected" or "Not Connected"
+    //is not available via getBasicInfo, that's why an additional request is needed
+    //only available in Zone 1, this setting is readonly
+    
+    var zone = getZone(1);
+    var command = '<YAMAHA_AV cmd="GET"><'+zone+'><Sound_Video><Headphone>GetParam</Headphone></Sound_Video></'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command).then(xml2js.parseStringAsync).then(function(info){
+        try {
+            return info.YAMAHA_AV[zone][0].Sound_Video[0].Headphone[0];
+        } 
+        catch (e) {
+            return "Not Available"; //if the Receiver has no Headphone Connector
+        }
+    });
+}
 
 Yamaha.prototype.getBasicInfo = function(zone){
 
@@ -186,9 +269,81 @@ function enrichBasicStatus(basicStatus, zone){
         return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Party_Info[0] === "On";
     };
 
+    //the following properties are only available in Main Zone
     basicStatus.isPureDirectEnabled = function(){
-        return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Pure_Direct[0].Mode[0] === "On";
+        try {
+            return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Pure_Direct[0].Mode[0] === "On";
+        } catch (e) {
+            return 'Not Available'; 
+        }
     };
+
+    basicStatus.getBass = function(){
+        try {
+            return parseInt(basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Tone[0].Bass[0].Val[0]);
+        } catch (e) {
+            return 0; 
+        }
+    };  
+
+    basicStatus.getTreble = function(){
+        try {
+            return parseInt(basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Tone[0].Treble[0].Val[0]);
+        } catch (e) {
+            return 0; 
+        }
+    };  
+
+    basicStatus.getSubwooferTrim = function(){
+        try {
+            return parseInt(basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Volume[0].Subwoofer_Trim[0].Val[0]);
+        } catch (e) {
+            return 0; 
+        }
+    }; 
+
+    basicStatus.getDialogueLift = function(){
+        try {
+            return parseInt(basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Dialogue_Adjust[0].Dialogue_Lift[0]);
+        } catch (e) {
+            return 0; 
+        }
+    };  
+
+    basicStatus.getDialogueLevel = function(){
+        try {
+            return parseInt(basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Dialogue_Adjust[0].Dialogue_Lvl[0]);
+        } catch (e) {
+            return 0; 
+        }
+    }; 
+
+    basicStatus.getYPAOVolume = function(){
+        //returns 'Off' or 'Auto'
+        try {
+            return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].YPAO_Volume[0];
+        } catch (e) {
+            return 'Not Available'; 
+        }
+    };   
+
+    basicStatus.getExtraBass = function(){
+        //returns 'Off' or 'Auto'
+        try {
+            return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Extra_Bass[0];
+        } catch (e) {
+            return 'Not Available'; 
+        }
+    }; 
+
+    basicStatus.getAdaptiveDRC = function(){
+        //returns 'Off' or 'Auto'
+        try {
+            return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Adaptive_DRC[0];
+        } catch (e) {
+            return 'Not Available'; 
+        }
+    }; 
     return basicStatus;
 }
 
@@ -202,7 +357,7 @@ function addBasicInfoWrapper(basicInfo){
     };
 }
 //TODO: no list, take properties of basicStatus object
-var basicInfos = ["getVolume", "isMuted", "isOn", "isOff", "getCurrentInput","isPartyModeEnabled", "isPureDirectEnabled"];
+var basicInfos = ["getVolume", "isMuted", "isOn", "isOff", "getCurrentInput","isPartyModeEnabled", "isPureDirectEnabled", "getBass"];
 for (var i = 0; i < basicInfos.length; i++) {
     var basicInfo = basicInfos[i];
     addBasicInfoWrapper(basicInfo);
