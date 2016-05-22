@@ -318,30 +318,30 @@ function enrichBasicStatus(basicStatus, zone){
         }
     }; 
 
-    basicStatus.getYPAOVolume = function(){
-        //returns 'Off' or 'Auto'
+    basicStatus.isYPAOVolumeEnabled = function(){
+        //values 'Off' or 'Auto'
         try {
-            return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].YPAO_Volume[0];
+            return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].YPAO_Volume[0] !== 'Off';
         } catch (e) {
-            return 'Not Available'; 
+            return false; 
         }
     };   
 
-    basicStatus.getExtraBass = function(){
-        //returns 'Off' or 'Auto'
+    basicStatus.isExtraBassEnabled = function(){
+        //values 'Off' or 'Auto'
         try {
-            return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Extra_Bass[0];
+            return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Extra_Bass[0] !== 'Off';
         } catch (e) {
-            return 'Not Available'; 
+            return false; 
         }
     }; 
 
-    basicStatus.getAdaptiveDRC = function(){
-        //returns 'Off' or 'Auto'
+    basicStatus.isAdaptiveDRCEnabled = function(){
+        //values 'Off' or 'Auto'
         try {
-            return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Adaptive_DRC[0];
+            return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Sound_Video[0].Adaptive_DRC[0] !== 'Off';
         } catch (e) {
-            return 'Not Available'; 
+            return false; 
         }
     }; 
     return basicStatus;
@@ -357,7 +357,7 @@ function addBasicInfoWrapper(basicInfo){
     };
 }
 //TODO: no list, take properties of basicStatus object
-var basicInfos = ["getVolume", "isMuted", "isOn", "isOff", "getCurrentInput","isPartyModeEnabled", "isPureDirectEnabled", "getBass"];
+var basicInfos = ["getVolume", "isMuted", "isOn", "isOff", "getCurrentInput","isPartyModeEnabled", "isPureDirectEnabled", "getBass", "getTreble", "getSubwooferTrim", "getDialogueLift", "getDialogueLevel", "isYPAOVolumeEnabled", "isExtraBassEnabled", "isAdaptiveDRCEnabled"];
 for (var i = 0; i < basicInfos.length; i++) {
     var basicInfo = basicInfos[i];
     addBasicInfoWrapper(basicInfo);
