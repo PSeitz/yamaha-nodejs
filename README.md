@@ -130,3 +130,6 @@ yamaha.isOn().then(function(result){
 ```javascript
 mocha mochatest.js --ip 192.168.0.25
 ```
+
+### Discovery
+If you know how to discover YAMAHA receivers, please contact me or create a pull request. I would like to integrate that function.
