@@ -128,6 +128,61 @@ Yamaha.prototype.setInputTo = function(to, zone){
     return this.SendXMLToReceiver(command);
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Yamaha.prototype.sendCommand = function (command, zone) {
+    zone = getZone(zone);
+    var command = '<YAMAHA_AV cmd="PUT"><' + zone + '>' + command + '</'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.setMute = function (to) {
+    return this.sendCommand('<Volume><Mute>' + (to ? "On" : "Off") + '</Mute></Volume>');
+};
+
+Yamaha.prototype.sendRcCode = function (code) {   // 7C80 = Power on/off
+    if (typeof code == 'number') {
+        code = code.toString(16);
+    }
+    //DSZ-Z7: <System><Remote_Signal><Receive><Code>***</Code></Receive></Remote_Signal></System>
+    //RX-Vx7x: <System><Misc><Remote_Signal><Receive><Code>***</Code></Receive></Remote_Signal></Misc></System>
+    //var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Remote_Control><RC_Code>' + code + '</RC_Code></Remote_Control></Main_Zone></YAMAHA_AV>';
+    //var command = '<YAMAHA_AV cmd="PUT"><System><Misc><Remote_Signal><Receive><Code>' + code + '</Code></Receive></Remote_Signal></Misc></System></YAMAHA_AV>';
+    //var command = '<YAMAHA_AV cmd="PUT"><System><Remote_Signal><Receive><Code>' + code + '</Code></Receive></Remote_Signal></System></YAMAHA_AV>';
+    
+    var command = '<YAMAHA_AV cmd="PUT"><System><Remote_Control><RC_Code>' + code + '</RC_Code></Remote_Control></System></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.setPureDirect = function(bo){
+    return this.sendCommand('<Sound_Video><Pure_Direct><Mode>' + (bo ? 'On' : 'Off') + '</Mode></Pure_Direct></Sound_Video>');
+};
+Yamaha.prototype.setHDMIOutput = function(no, bo){
+    return this.sendCommand('<Sound_Video><HDMI><Output><OUT_' + no + '>' + (bo ? 'On' : 'Off') + '</OUT_' + no + '></Output></HDMI></Sound_Video>', 'System');
+};
+Yamaha.prototype.scene = function(no) {
+    adapter.setState('scene', '', true);
+    return this.sendCommand('<Scene><Scene_Load>Scene ' + no + '</Scene_Load></Scene>');
+};
+Yamaha.prototype.power = function(bo, zone){
+    return this.sendCommand('<Power_Control><Power>' + (bo ? 'On' : 'Standby') + '</Power></Power_Control>', zone);
+};
+Yamaha.prototype.allZones = function(bo){
+    return this.sendCommand('<Power_Control><Power>' + (bo ? 'On' : 'Standby') + '</Power></Power_Control>', 'System');
+};
+
+Yamaha.prototype.sleep = function(val, zone){
+    if (val < 30) val = 'Off';
+    else if (val < 60) val = '30 min';
+    else if (val < 90) val = '60 min';
+    else if (val < 120) val = '90 min';
+    else val = '120 min';
+    return this.sendCommand('<Power_Control><Sleep>' + val + '</Sleep></Power_Control>', zone);
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 Yamaha.prototype.setBassTo = function(to){
     var zone = getZone(); //only available in Main Zone
     var command = '<YAMAHA_AV cmd="PUT"><'+zone+'><Sound_Video><Tone><Bass><Val>'+to+'</Val><Exp>1</Exp><Unit>dB</Unit></Bass></Tone></Sound_Video></'+zone+'></YAMAHA_AV>';
@@ -198,17 +253,21 @@ Yamaha.prototype.SendXMLToReceiver= function(xml){
 
     var isPutCommand = xml.indexOf("cmd=\"PUT\"">=0);
     var delay = isPutCommand? this.responseDelay*1000:0;
-    return request.postAsync({
-        method: 'POST', 
+    var req = {
+        method: 'POST',
         uri: 'http://'+this.ip+'/YamahaRemoteControl/ctrl',
         body:xml
-    }).delay(delay).then(function(response) {
+    };
+    if (this.requestTimeout) req.timeout = this.requestTimeout;
+    
+    return request.postAsync(req).delay(delay).then(function(response) {
         return response.body;
     }).catch(function(e) {
         console.log(e);
     });
 
 };
+
 
 Yamaha.prototype.getColor = function()
 {
