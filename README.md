@@ -135,5 +135,5 @@ mocha mochatest.js
 ```
 
 #### Discovery
-If the IP is omitted in the constructor, the module will try to discover the yamaha ip via a SSDP call
+If the IP is omitted in the constructor, the module will try to discover the yamaha ip via a SSDP call.
 Thanks @soef @mwittig
