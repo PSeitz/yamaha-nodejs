@@ -29,6 +29,7 @@ yamaha.powerOn().then(function(){
 ## Methods
 ```javascript
 var yamaha = new Yamaha("192.168.0.100")
+var yamaha = new Yamaha() // Auto-Discovery
 yamaha.powerOff(zone)
 yamaha.powerOn(zone)
 yamaha.isOn(zone)
@@ -129,7 +130,10 @@ yamaha.isOn().then(function(result){
 #### Execute Tests
 ```javascript
 mocha mochatest.js --ip 192.168.0.25
+or with autodiscovery
+mocha mochatest.js
 ```
 
 #### Discovery
-If you know how to discover YAMAHA receivers, please contact me or create a pull request. I would like to integrate that function.
+If the IP is omitted in the constructor, the module will try to discover the yamaha ip via a SSDP call
+Thanks @soef @mwittig
