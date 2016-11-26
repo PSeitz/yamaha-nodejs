@@ -9,6 +9,59 @@ Promise.promisifyAll(request);
 
 function Yamaha() {}
 
+Yamaha.prototype.SendXMLToReceiver= function(xml){
+    var isPutCommand = xml.indexOf("cmd=\"PUT\"">=0);
+    var delay = isPutCommand? this.responseDelay*1000:0;
+    return this.getOrDiscoverIP().then(function(ip){
+        var req = {
+            method: 'POST',
+            uri: 'http://'+ip+'/YamahaRemoteControl/ctrl',
+            body:xml
+        };
+        if (this.requestTimeout) req.timeout = this.requestTimeout;
+        
+        return request.postAsync(req).delay(delay).then(function(response) {
+            return response.body;
+        }).catch(function(e) {
+            console.log(e);
+        });
+    })
+
+};
+
+var reYamahaManufacturer = /<manufacturer>.*yamaha.*<\/manufacturer>/i;
+Yamaha.prototype.discover = function (timeout) {
+    return new Promise(function(resolve, reject){
+        var ssdp = require("peer-ssdp");
+        var peer = ssdp.createPeer();
+        var timer = setTimeout(notFound, timeout || 5000);
+
+        function notFound() {
+            if (peer) peer.close();
+            reject(new Error('Yamaha Receiver not found'))
+        }
+
+        peer.on("ready", function () {
+            peer.search({ ST: 'urn:schemas-upnp-org:device:MediaRenderer:1' });
+        }).on("found", function (headers, address) {
+            if (headers.LOCATION) {
+                request(headers.LOCATION, function (error, response, body) {
+                    if (!error && response.statusCode == 200 && reYamahaManufacturer.test(body)) {
+                        clearTimeout(timer);
+                        peer.close()
+                        resolve(address.address)
+                    }
+                    if (error) {
+                        console.log(error)
+                        reject(error)
+                    }
+                });
+            }
+        }).start();
+    })
+
+};
+
 function getZone(zone){
     if (!zone) return "Main_Zone";
 
@@ -21,48 +74,48 @@ function getZone(zone){
     }
 
     switch (zone) {
-        case 1: 
-            zone = "Main_Zone";
-            break; 
-        case 2: case 3: case 4: 
-            zone = "Zone_"+zone;
+    case 1: 
+        zone = "Main_Zone";
+        break; 
+    case 2: case 3: case 4: 
+        zone = "Zone_"+zone;
     }
     return zone;
 }
 
 Yamaha.prototype.muteOn = function(zone){
-  var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Volume><Mute>On</Mute></Volume></'+getZone(zone)+'></YAMAHA_AV>';
-  return this.SendXMLToReceiver(command);
+    var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Volume><Mute>On</Mute></Volume></'+getZone(zone)+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
 };
 
 Yamaha.prototype.muteOff = function(zone){
-  var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Volume><Mute>Off</Mute></Volume></'+getZone(zone)+'></YAMAHA_AV>';
-  return this.SendXMLToReceiver(command);
+    var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Volume><Mute>Off</Mute></Volume></'+getZone(zone)+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
 };
 
 Yamaha.prototype.stop = function(zone){
-  var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Play_Control><Playback>Stop</Playback></Play_Control></'+getZone(zone)+'></YAMAHA_AV>';
-  return this.SendXMLToReceiver(command);
+    var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Play_Control><Playback>Stop</Playback></Play_Control></'+getZone(zone)+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
 };
 
 Yamaha.prototype.pause = function(zone){
-  var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Play_Control><Playback>Pause</Playback></Play_Control></'+getZone(zone)+'></YAMAHA_AV>';
-  return this.SendXMLToReceiver(command);
+    var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Play_Control><Playback>Pause</Playback></Play_Control></'+getZone(zone)+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
 };
 
 Yamaha.prototype.play = function(zone){
-  var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Play_Control><Playback>Play</Playback></Play_Control></'+getZone(zone)+'></YAMAHA_AV>';
-  return this.SendXMLToReceiver(command);
+    var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Play_Control><Playback>Play</Playback></Play_Control></'+getZone(zone)+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
 };
 
 Yamaha.prototype.skip = function(zone){
-  var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Play_Control><Playback>Skip Fwd</Playback></Play_Control></'+getZone(zone)+'></YAMAHA_AV>';
-  return this.SendXMLToReceiver(command);
+    var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Play_Control><Playback>Skip Fwd</Playback></Play_Control></'+getZone(zone)+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
 };
 
 Yamaha.prototype.rewind = function(zone){
-  var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Play_Control><Playback>Skip Rev</Playback></Play_Control></'+getZone(zone)+'></YAMAHA_AV>';
-  return this.SendXMLToReceiver(command);
+    var command = '<YAMAHA_AV cmd="PUT"><'+getZone(zone)+'><Play_Control><Playback>Skip Rev</Playback></Play_Control></'+getZone(zone)+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
 };
 
 Yamaha.prototype.powerOn = function(zone){
@@ -97,23 +150,23 @@ Yamaha.prototype.adjustVolumeBy = function(by){
     });
 };
 
-Yamaha.prototype.partyModeOn = function(to){
+Yamaha.prototype.partyModeOn = function(){
     var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Mode>On</Mode></Party_Mode></System></YAMAHA_AV>';
     return this.SendXMLToReceiver(command);
 };
 
-Yamaha.prototype.partyModeOff = function(to){
+Yamaha.prototype.partyModeOff = function(){
     var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Mode>Off</Mode></Party_Mode></System></YAMAHA_AV>';
     return this.SendXMLToReceiver(command);
 };
 
-Yamaha.prototype.partyModeUp = function(to){
+Yamaha.prototype.partyModeUp = function(){
     // Increments all zones up equally
     var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Volume><Lvl>Up</Lvl></Volume><</Party_Mode></System></YAMAHA_AV>';
     return this.SendXMLToReceiver(command);
 };
 
-Yamaha.prototype.partyModeDown = function(to){
+Yamaha.prototype.partyModeDown = function(){
     // Increments all zones down equally
     var command = '<YAMAHA_AV cmd="PUT"><System><Party_Mode><Volume><Lvl>Down</Lvl></Volume><</Party_Mode></System></YAMAHA_AV>';
     return this.SendXMLToReceiver(command);
@@ -130,15 +183,6 @@ Yamaha.prototype.setInputTo = function(to, zone){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Yamaha.prototype.sendCommand = function (command, zone) {
-    zone = getZone(zone);
-    var command = '<YAMAHA_AV cmd="PUT"><' + zone + '>' + command + '</'+zone+'></YAMAHA_AV>';
-    return this.SendXMLToReceiver(command);
-};
-
-Yamaha.prototype.setMute = function (to) {
-    return this.sendCommand('<Volume><Mute>' + (to ? "On" : "Off") + '</Mute></Volume>');
-};
 
 Yamaha.prototype.sendRcCode = function (code) {   // 7C80 = Power on/off
     if (typeof code == 'number') {
@@ -154,21 +198,11 @@ Yamaha.prototype.sendRcCode = function (code) {   // 7C80 = Power on/off
     return this.SendXMLToReceiver(command);
 };
 
-Yamaha.prototype.setPureDirect = function(bo){
-    return this.sendCommand('<Sound_Video><Pure_Direct><Mode>' + (bo ? 'On' : 'Off') + '</Mode></Pure_Direct></Sound_Video>');
+Yamaha.prototype.setPureDirect = function(on){
+    return this.sendPutCommand('<Sound_Video><Pure_Direct><Mode>' + (on ? 'On' : 'Off') + '</Mode></Pure_Direct></Sound_Video>');
 };
-Yamaha.prototype.setHDMIOutput = function(no, bo){
-    return this.sendCommand('<Sound_Video><HDMI><Output><OUT_' + no + '>' + (bo ? 'On' : 'Off') + '</OUT_' + no + '></Output></HDMI></Sound_Video>', 'System');
-};
-Yamaha.prototype.scene = function(no) {
-    adapter.setState('scene', '', true);
-    return this.sendCommand('<Scene><Scene_Load>Scene ' + no + '</Scene_Load></Scene>');
-};
-Yamaha.prototype.power = function(bo, zone){
-    return this.sendCommand('<Power_Control><Power>' + (bo ? 'On' : 'Standby') + '</Power></Power_Control>', zone);
-};
-Yamaha.prototype.allZones = function(bo){
-    return this.sendCommand('<Power_Control><Power>' + (bo ? 'On' : 'Standby') + '</Power></Power_Control>', 'System');
+Yamaha.prototype.setHDMIOutput = function(hdmi_num, on){
+    return this.sendPutCommand('<Sound_Video><HDMI><Output><OUT_' + hdmi_num + '>' + (on ? 'On' : 'Off') + '</OUT_' + hdmi_num + '></Output></HDMI></Sound_Video>', 'System');
 };
 
 Yamaha.prototype.sleep = function(val, zone){
@@ -177,7 +211,7 @@ Yamaha.prototype.sleep = function(val, zone){
     else if (val < 90) val = '60 min';
     else if (val < 120) val = '90 min';
     else val = '120 min';
-    return this.sendCommand('<Power_Control><Sleep>' + val + '</Sleep></Power_Control>', zone);
+    return this.sendPutCommand('<Power_Control><Sleep>' + val + '</Sleep></Power_Control>', zone);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,25 +283,22 @@ Yamaha.prototype.adaptiveDRCOff = function(){
     return this.SendXMLToReceiver(command);
 };
 
-Yamaha.prototype.SendXMLToReceiver= function(xml){
 
-    var isPutCommand = xml.indexOf("cmd=\"PUT\"">=0);
-    var delay = isPutCommand? this.responseDelay*1000:0;
-    var req = {
-        method: 'POST',
-        uri: 'http://'+this.ip+'/YamahaRemoteControl/ctrl',
-        body:xml
-    };
-    if (this.requestTimeout) req.timeout = this.requestTimeout;
-    
-    return request.postAsync(req).delay(delay).then(function(response) {
-        return response.body;
-    }).catch(function(e) {
-        console.log(e);
-    });
+Yamaha.prototype.getOrDiscoverIP= function(){
+    if (this.ip) return Promise.resolve(this.ip)
+    if (!this.discoverPromise){
+        this.discoverPromise = this.discover().tap(function(ip){
+            this.ip = ip
+        })
+    }
+    return this.discoverPromise
+}
 
+Yamaha.prototype.sendPutCommand = function (command, zone) {
+    zone = getZone(zone);
+    command = '<YAMAHA_AV cmd="PUT"><' + zone + '>' + command + '</'+zone+'></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
 };
-
 
 Yamaha.prototype.getColor = function()
 {
@@ -301,8 +332,7 @@ Yamaha.prototype.getBasicInfo = function(zone){
 };
 
 function enrichBasicStatus(basicStatus, zone){
-
-    var zone = getZone(zone);
+    zone = getZone(zone);
 
     basicStatus.getVolume = function(){
         return parseInt(basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Volume[0].Lvl[0].Val[0]);
@@ -472,10 +502,6 @@ function enrichListInfo(listInfo, listname){
 
     listInfo.getMenuName = function(){
         return listInfo.YAMAHA_AV[listname][0].List_Info[0].Menu_Name[0];
-    };
-
-    listInfo.getList = function(){
-        var list = listInfo.YAMAHA_AV[listname][0].List_Info[0].Menu_Name[0];
     };
 
 }

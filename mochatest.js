@@ -1,3 +1,5 @@
+/* eslint-env node, mocha */
+
 var chai = require('chai');
 var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
@@ -6,7 +8,7 @@ var Yamaha = require("./yamaha.js");
 
 
 
-var yamaha_ip= process.argv[4] || "192.168.0.25";
+var yamaha_ip= process.argv[4];
 
 // Tests For Yamaha RV-775
 describe('Yamaha-API', function() {
@@ -48,7 +50,7 @@ describe('Yamaha-API', function() {
         var yamaha = new Yamaha(yamaha_ip, 0.5);
         return expect(yamaha.volumeUp(100).then(function(on){
             return yamaha.getVolume();
-        })).to.eventually.equal(-500);;
+        })).to.eventually.equal(-500);
     });
 
 
@@ -81,6 +83,7 @@ describe('Yamaha-API', function() {
     });
 
     it('should switch to the webradio favorites and wait to be ready', function() {
+        this.timeout(7000);
         var yamaha = new Yamaha(yamaha_ip, 0.5);
 
         return expect(yamaha.whenMenuReady("NET_RADIO").then(function(result){
@@ -98,22 +101,22 @@ describe('Yamaha-API', function() {
         })).to.eventually.be.true;
     });
 
-     it('should switch to partey mode off', function() {
+    it('should switch to partey mode off', function() {
         var yamaha = new Yamaha(yamaha_ip, 0.5);
         return expect(yamaha.partyModeOff().then(function(on){
             return yamaha.isPartyModeEnabled();
         })).to.eventually.be.false;
     });
 
-    it('should mute main_zone', function() {
-        var yamaha = new Yamaha(yamaha_ip, 0.5);
+    it('should discover the yamaha and mute main_zone', function() {
+        var yamaha = new Yamaha();
         return expect(yamaha.muteOn().then(function(on){
             return yamaha.isMuted();
         })).to.eventually.be.true;
     });
 
-    it('should unmute main_zone', function() {
-        var yamaha = new Yamaha(yamaha_ip, 0.5);
+    it('should discover the yamaha and unmute main_zone', function() {
+        var yamaha = new Yamaha();
         return expect(yamaha.muteOff().then(function(on){
             return yamaha.isMuted();
         })).to.eventually.be.false;
