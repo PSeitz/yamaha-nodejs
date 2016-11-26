@@ -1,12 +1,13 @@
 {
   "name": "yamaha-nodejs",
-  "version": "0.6.0",
+  "version": "0.7.2",
   "description": "An API to control your YAMAHA Receiver written in nodejs",
   "main": "yamaha.js",
   "dependencies": {
     "bluebird": "^3.3.4",
     "request": "^2.69.0",
-    "xml2js": "^0.4.16"
+    "xml2js": "^0.4.16",
+    "peer-ssdp": "0.0.5"
   },
   "devDependencies": {
     "chai": "^3.5.0",

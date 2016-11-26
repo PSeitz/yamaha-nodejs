@@ -26,3 +26,8 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+
+.idea
+/npm-debug.log
+/tmp/*.zip
+/log/*.log
