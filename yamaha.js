@@ -20,43 +20,8 @@ function Yamaha(ip, responseDelay, requestTimeout)
     this.requestTimeout = requestTimeout;
 }
 
-
 extend(Yamaha.prototype, simpleCommands.prototype);
 extend(Yamaha.prototype, chainedCommands.prototype);
-
-
-var reYamahaManufacturer = /<manufacturer>.*yamaha.*<\/manufacturer>/i;
-var reFriendlyName = /<friendlyName>([^<]*)<\/friendlyName>/;
-
-Yamaha.prototype.discover = function (callback, timeout) {
-    var request = require('request');
-    var ssdp = require("peer-ssdp");
-    var peer = ssdp.createPeer();
-    var timer = setTimeout(closePeer, timeout || 5000);
-    
-    function closePeer(ip, info) {
-        timer = null;
-        if (peer) peer.close();
-        peer = null;
-        callback(ip, info);
-    }
-    
-    peer.on("ready", function () {
-        peer.search({ ST: 'urn:schemas-upnp-org:device:MediaRenderer:1' });
-    }).on("found", function (headers, address) {
-        if (headers.LOCATION) {
-            request(headers.LOCATION, function (error, response, body) {
-                if (!error && response.statusCode == 200 && reYamahaManufacturer.test(body)) {
-                    var info = reFriendlyName.exec(body);
-                    if (timer) {
-                        clearTimeout(timer);
-                        closePeer(address.address, info && info.length >= 2 ? info[1] : '');
-                    }
-                }
-            });
-        }
-    }).start();
-};
 
 Yamaha.prototype.waitForNotify = function (ip, callback) {
     var ssdp = require("peer-ssdp");
@@ -70,7 +35,6 @@ Yamaha.prototype.waitForNotify = function (ip, callback) {
     }).start();
     return peer;
 };
-
 
 function extend(destination , source) {
     for (var k in source) {
