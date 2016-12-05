@@ -22,7 +22,7 @@ Yamaha.prototype.SendXMLToReceiver= function(xml){
         if (this.requestTimeout) req.timeout = this.requestTimeout;
         
         var prom = request.postAsync(req).delay(delay).then(response => response.body)
-        if (self.catchRequestErrors) prom.catch(console.log.bind(console));
+        if (self.catchRequestErrors === true) prom.catch(console.log.bind(console));
 
         return prom
         
