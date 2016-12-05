@@ -10,9 +10,10 @@ Promise.promisifyAll(request);
 function Yamaha() {}
 
 Yamaha.prototype.SendXMLToReceiver= function(xml){
-    var isPutCommand = xml.indexOf("cmd=\"PUT\"">=0);
-    var delay = isPutCommand? this.responseDelay*1000:0;
-    return this.getOrDiscoverIP().then(function(ip){
+    var self = this;
+    return this.getOrDiscoverIP().then(ip => {
+        var isPutCommand = xml.indexOf("cmd=\"PUT\"">=0);
+        var delay = isPutCommand? this.responseDelay*1000:0;
         var req = {
             method: 'POST',
             uri: 'http://'+ip+'/YamahaRemoteControl/ctrl',
@@ -20,11 +21,11 @@ Yamaha.prototype.SendXMLToReceiver= function(xml){
         };
         if (this.requestTimeout) req.timeout = this.requestTimeout;
         
-        return request.postAsync(req).delay(delay).then(function(response) {
-            return response.body;
-        }).catch(function(e) {
-            console.log(e);
-        });
+        var prom = request.postAsync(req).delay(delay).then(response => response.body)
+        if (self.catchRequestErrors) prom.catch(console.log.bind(console));
+
+        return prom
+        
     })
 
 };
@@ -50,10 +51,6 @@ Yamaha.prototype.discover = function (timeout) {
                         clearTimeout(timer);
                         peer.close()
                         resolve(address.address)
-                    }
-                    if (error) {
-                        console.log(error)
-                        reject(error)
                     }
                 });
             }
