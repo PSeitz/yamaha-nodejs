@@ -131,19 +131,20 @@ Yamaha.prototype.setVolumeTo = function(to, zone){
 };
 Yamaha.prototype.setVolume = Yamaha.prototype.setVolumeTo;
 
-Yamaha.prototype.volumeUp = function(by){
-    return this.adjustVolumeBy(by);
+Yamaha.prototype.volumeUp = function(by, zone){
+    return this.adjustVolumeBy(by, zone);
 };
 
-Yamaha.prototype.volumeDown= function(by){
-    return this.adjustVolumeBy(-by);
+Yamaha.prototype.volumeDown= function(by, zone){
+    return this.adjustVolumeBy(-by, zone);
 };
 
-Yamaha.prototype.adjustVolumeBy = function(by){
+Yamaha.prototype.adjustVolumeBy = function(by, zone){
+    console.log('adjustVolumeBy', by, zone);
     if (typeof by == 'string' || by instanceof String) by = parseInt(by);
     var self = this;
-    return self.getBasicInfo().then(function(basicInfo){
-        return self.setVolumeTo(basicInfo.getVolume()+by);
+    return self.getBasicInfo(zone).then(function(basicInfo){
+        return self.setVolumeTo(basicInfo.getVolume()+by, zone);
     });
 };
 
