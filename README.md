@@ -37,8 +37,8 @@ yamaha.isOff(zone)
 
 //Volume
 yamaha.setVolumeTo(-500, zone)
-yamaha.volumeUp(50)
-yamaha.volumeDown(50)
+yamaha.volumeUp(50, zone)
+yamaha.volumeDown(50, zone)
 yamaha.muteOn(zone)
 yamaha.muteOff(zone)
 
