@@ -1,5 +1,8 @@
-Yamaha-nodejs
+Yamaha-nodejs 
 ==================
+[![NPM Downloads](https://img.shields.io/npm/dm/yamaha-nodejs.svg?style=flat)](https://npmjs.org/package/yamaha-nodejs)
+[![Dependency Status](https://david-dm.org/PSeitz/yamaha-nodejs.svg?style=flat)](https://david-dm.org/PSeitz/yamaha-nodejs)
+
 
 A node module to control your yamaha receiver. Tested with RX-V775, should work with all yamaha receivers with a network interface.
 
