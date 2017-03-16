@@ -575,6 +575,14 @@ Yamaha.prototype.getTunerPresetList = function() {
     });
 };
 
+Yamaha.prototype.getTunerInfo = function() {
+    var command = '<YAMAHA_AV cmd="GET"><Tuner><Play_Info>GetParam</Play_Info></Tuner></YAMAHA_AV>';
+
+    return this.SendXMLToReceiver(command).then(xml2js.parseStringAsync).then(function(info) {
+        var presets = info.YAMAHA_AV.Tuner[0];
+        return (presets);
+    });
+};
 
 Yamaha.prototype.selectTunerFrequency = function(band, frequency) {
     var unit = band == "FM" ? "MHz" : "KHz",
