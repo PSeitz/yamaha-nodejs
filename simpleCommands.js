@@ -144,7 +144,6 @@ Yamaha.prototype.volumeDown = function(by, zone) {
 };
 
 Yamaha.prototype.adjustVolumeBy = function(by, zone) {
-    console.log('adjustVolumeBy', by, zone);
     if (typeof by == 'string' || by instanceof String) by = parseInt(by);
     var self = this;
     return self.getBasicInfo(zone).then(function(basicInfo) {
