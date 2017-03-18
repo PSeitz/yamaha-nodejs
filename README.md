@@ -1,4 +1,4 @@
-Yamaha-nodejs 
+Yamaha-nodejs
 ==================
 [![NPM Downloads](https://img.shields.io/npm/dm/yamaha-nodejs.svg?style=flat)](https://npmjs.org/package/yamaha-nodejs)
 [![Dependency Status](https://david-dm.org/PSeitz/yamaha-nodejs.svg?style=flat)](https://david-dm.org/PSeitz/yamaha-nodejs)
@@ -103,6 +103,8 @@ yamaha.getAvailableInputs()
 yamaha.isMenuReady("NET_RADIO")
 
 // FM Tuner
+yamaha.getTunerInfo()
+yamaha.getTunerPresetList()
 yamaha.selectTunerPreset(1)
 yamaha.selectTunerFrequency(band, frequency)
 
@@ -115,9 +117,9 @@ yamaha.getWebRadioList()
 yamaha.selectWebRadioListItem(1)
 
 // Chained Commands, they ensure the receiver is in the right state
-yamaha.switchToFavoriteNumber() 
-    
-    
+yamaha.switchToFavoriteNumber()
+
+
 ```
 
 #### Zones

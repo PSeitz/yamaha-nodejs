@@ -31,3 +31,4 @@ node_modules
 /npm-debug.log
 /tmp/*.zip
 /log/*.log
+preset*
