@@ -119,6 +119,9 @@ yamaha.selectWebRadioListItem(1)
 // Chained Commands, they ensure the receiver is in the right state
 yamaha.switchToFavoriteNumber()
 
+// Zone Commands
+yamaha.getAvailableZones()
+yamaha.getZoneConfig(zone)
 
 ```
 
