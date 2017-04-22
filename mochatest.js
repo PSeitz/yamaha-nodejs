@@ -34,6 +34,10 @@ describe('Yamaha-API', function() {
         return expect(yamaha.getAvailableInputs()).to.eventually.have.length(16);
     });
 
+    it('should return 2 zones', function() {
+        return expect(yamaha.getAvailableZones()).to.eventually.have.length(2);
+    });
+
     it('should set volume to -600', function() {
         return expect(yamaha.setVolume(-600).then(function(on){
             return yamaha.getVolume();

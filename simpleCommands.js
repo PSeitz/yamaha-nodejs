@@ -76,9 +76,7 @@ function getZone(zone) {
         case 1:
             zone = "Main_Zone";
             break;
-        case 2:
-        case 3:
-        case 4:
+        case 2: case 3: case 4:
             zone = "Zone_" + zone;
     }
     return zone;
