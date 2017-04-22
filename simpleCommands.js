@@ -456,6 +456,25 @@ Yamaha.prototype.getSystemConfig = function() {
     return this.SendXMLToReceiver(command).then(xml2js.parseStringAsync);
 };
 
+Yamaha.prototype.getZoneConfig = function(zone) {
+    var command = '<YAMAHA_AV cmd="GET"><' + getZone(zone) + '><Config>GetParam</Config></' + getZone(zone) + '></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command).then(xml2js.parseStringAsync);
+};
+
+Yamaha.prototype.getAvailableZones = function() {
+    return this.getSystemConfig().then(function(info) {
+        var zones = [];
+        var zonesXML = info.YAMAHA_AV.System[0].Config[0].Feature_Existence[0];
+        for (var prop in zonesXML) {
+            // Only return zones that the receiver supports
+            if (prop.includes('one') && zonesXML[prop].includes('1')) {
+                zones.push(prop);
+            }
+        }
+        return zones;
+    });
+};
+
 Yamaha.prototype.getAvailableInputs = function() {
     return this.getSystemConfig().then(function(info) {
         var inputs = [];
