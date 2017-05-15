@@ -463,6 +463,7 @@ Yamaha.prototype.getAvailableZones = function() {
     return this.getSystemConfig().then(function(info) {
         var zones = [];
         var zonesXML = info.YAMAHA_AV.System[0].Config[0].Feature_Existence[0];
+        console.log(JSON.stringify(info, null, 2));
         for (var prop in zonesXML) {
             // Only return zones that the receiver supports
             if (prop.includes('one') && zonesXML[prop].includes('1')) {
