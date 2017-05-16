@@ -76,7 +76,9 @@ function getZone(zone) {
         case 1:
             zone = "Main_Zone";
             break;
-        case 2: case 3: case 4:
+        case 2:
+        case 3:
+        case 4:
             zone = "Zone_" + zone;
     }
     return zone;
@@ -330,9 +332,15 @@ Yamaha.prototype.getBasicInfo = function(zone) {
 
 function enrichBasicStatus(basicStatus, zone) {
     zone = getZone(zone);
+    console.log(JSON.stringify(basicStatus, null, 2));
+    console.log(zone);
 
     basicStatus.getVolume = function() {
-        return parseInt(basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Volume[0].Lvl[0].Val[0]);
+        try {
+            return parseInt(basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Volume[0].Lvl[0].Val[0]);
+        } catch (e) {
+            return 0;
+        }
     };
 
     basicStatus.isMuted = function() {
