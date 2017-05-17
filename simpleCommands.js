@@ -1,4 +1,5 @@
 var Promise = require("bluebird");
+var debug = require('debug')('Yamaha-nodejs');
 var xml2js = Promise.promisifyAll(require("xml2js"));
 
 var request = Promise.promisify(require("request"));
@@ -332,14 +333,13 @@ Yamaha.prototype.getBasicInfo = function(zone) {
 
 function enrichBasicStatus(basicStatus, zone) {
     zone = getZone(zone);
-    console.log(JSON.stringify(basicStatus, null, 2));
-    console.log(zone);
+    debug("getBasicInfo",zone,JSON.stringify(basicStatus, null, 2));
 
     basicStatus.getVolume = function() {
         try {
             return parseInt(basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Volume[0].Lvl[0].Val[0]);
         } catch (e) {
-            return 0;
+            return -999;
         }
     };
 
@@ -471,7 +471,7 @@ Yamaha.prototype.getAvailableZones = function() {
     return this.getSystemConfig().then(function(info) {
         var zones = [];
         var zonesXML = info.YAMAHA_AV.System[0].Config[0].Feature_Existence[0];
-        console.log(JSON.stringify(info, null, 2));
+        debug("getAvailableZones",JSON.stringify(info, null, 2));
         for (var prop in zonesXML) {
             // Only return zones that the receiver supports
             if (prop.includes('one') && zonesXML[prop].includes('1')) {
