@@ -342,6 +342,10 @@ function enrichBasicStatus(basicStatus, zone) {
             return -999;
         }
     };
+    
+    basicStatus.getZone = function() {
+        return zone;
+    }
 
     basicStatus.isMuted = function() {
         return basicStatus.YAMAHA_AV[zone][0].Basic_Status[0].Volume[0].Mute[0] !== "Off";
