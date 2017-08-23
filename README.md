@@ -33,13 +33,13 @@ yamaha.powerOn().then(function(){
 ```javascript
 var yamaha = new Yamaha("192.168.0.100")
 var yamaha = new Yamaha() // Auto-Discovery
-yamaha.powerOff(zone)
-yamaha.powerOn(zone)
+yamaha.powerOff(zone) // or "System" for sytem power
+yamaha.powerOn(zone)  // or "System" for sytem power
 yamaha.isOn(zone)
 yamaha.isOff(zone)
 
 //Volume
-yamaha.setVolumeTo(-500, zone)
+yamaha.setVolumeTo(-500, zone) // Value must be divisble by 5 or value will be rejected
 yamaha.volumeUp(50, zone)
 yamaha.volumeDown(50, zone)
 yamaha.muteOn(zone)
