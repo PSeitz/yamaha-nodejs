@@ -12,7 +12,7 @@ function Yamaha() {}
 Yamaha.prototype.SendXMLToReceiver = function(xml) {
     var self = this;
     return this.getOrDiscoverIP().then(ip => {
-        var isPutCommand = xml.indexOf("cmd=\"PUT\"" >= 0);
+        var isPutCommand = xml.indexOf("cmd=\"PUT\"") >= 0 ;
         var delay = isPutCommand ? this.responseDelay * 1000 : 0;
         var req = {
             method: 'POST',
