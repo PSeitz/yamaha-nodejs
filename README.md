@@ -145,3 +145,7 @@ mocha mochatest.js
 #### Discovery
 If the IP is omitted in the constructor, the module will try to discover the yamaha ip via a SSDP call.
 Thanks @soef @mwittig
+
+#### Changelog
+0.8: 
+- FIX Remove get request delays
