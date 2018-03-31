@@ -92,6 +92,7 @@ yamaha.getBasicInfo(zone).done(function(basicInfo){
     basicInfo.getSubwooferTrim();
     basicInfo.getDialogueLift();
     basicInfo.getDialogueLevel();
+		basicInfo.getZone();
     basicInfo.isYPAOVolumeEnabled();
     basicInfo.isExtraBassEnabled();
     basicInfo.isAdaptiveDRCEnabled();
