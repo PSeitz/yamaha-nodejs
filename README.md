@@ -65,6 +65,10 @@ yamaha.play(zone)
 yamaha.skip(zone)
 yamaha.rewind(zone)
 
+//Remote (Case Sentitive Values)
+yamaha.remoteCursor(command) // 'Up', 'Down', 'Left', 'Right', 'Return', 'Sel'
+yamaha.remoteMenu(command)   // 'Option', 'Display'
+
 //Switch Input
 yamaha.setInputTo("USB", 2)
 yamaha.setMainInputTo("NET RADIO")
