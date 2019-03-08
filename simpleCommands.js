@@ -183,22 +183,6 @@ Yamaha.prototype.setInputTo = function(to, zone) {
     return this.SendXMLToReceiver(command);
 };
 
-Yamaha.prototype.remoteCursor = function(cursorKey) {
-    // Valid Cursor Values (case-sensitve):
-    // Up, Down, Right, Left, Return, Sel
-
-    var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Cursor_Control><Cursor>' + cursorKey + '</Cursor></Cursor_Control></Main_Zone></YAMAHA_AV>';
-    return this.SendXMLToReceiver(command);
-};
-
-Yamaha.prototype.remoteMenu = function(menuKey) {
-    // Valid Menu Values (case-sensitve):
-    // Option, Display
-
-    var command = '<YAMAHA_AV cmd="PUT"><Main_Zone><Cursor_Control><Menu_Control>' + menuKey + '</Menu_Control></Cursor_Control></Main_Zone></YAMAHA_AV>';
-    return this.SendXMLToReceiver(command);
-};
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -358,7 +342,7 @@ function enrichBasicStatus(basicStatus, zone) {
             return -999;
         }
     };
-
+    
     basicStatus.getZone = function() {
         return zone;
     }
