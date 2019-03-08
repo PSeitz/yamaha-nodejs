@@ -65,7 +65,7 @@ yamaha.play(zone)
 yamaha.skip(zone)
 yamaha.rewind(zone)
 
-//Remote (Case Sentitive Values)
+//Remote (Case Sensitive Values)
 yamaha.remoteCursor(command) // 'Up', 'Down', 'Left', 'Right', 'Return', 'Sel'
 yamaha.remoteMenu(command)   // 'Option', 'Display'
 
@@ -152,5 +152,5 @@ If the IP is omitted in the constructor, the module will try to discover the yam
 Thanks @soef @mwittig
 
 #### Changelog
-0.8: 
+0.8:
 - FIX Remove get request delays
