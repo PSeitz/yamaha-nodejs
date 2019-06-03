@@ -79,6 +79,7 @@ Yamaha.prototype.getIndexOfMenuItem = async function(list, item, listName) {
 
 Yamaha.prototype.gotoFolder = async function(path, listName) {
     const menuOrder = splitPathToArray(path);
+    await this.setMainInputTo(listName.replace('_', ' '));
     let list = await this.getList(listName);
 
     let menuName = list.getMenuName();
