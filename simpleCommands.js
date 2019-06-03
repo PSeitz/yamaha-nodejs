@@ -518,6 +518,11 @@ Yamaha.prototype.selectListItem = function(listname, number) {
     return this.SendXMLToReceiver(command);
 };
 
+Yamaha.prototype.jumpListItem = function(listname, lineNumber) {
+    var command = '<YAMAHA_AV cmd="PUT"><' + listname + '>}><List_Control><Jump_Line>' + lineNumber + '</Jump_Line></List_Control></' + listname + '></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
 Yamaha.prototype.getList = function(name) {
     var command = '<YAMAHA_AV cmd="GET"><' + name + '><List_Info>GetParam</List_Info></' + name + '></YAMAHA_AV>';
     return this.SendXMLToReceiver(command).then(xml2js.parseStringAsync).then(function(info) {
@@ -585,8 +590,16 @@ Yamaha.prototype.selectUSBListItem = function(number) {
     return this.selectListItem("USB", number);
 };
 
+Yamaha.prototype.jumpUSBListItem = function(number) {
+    return this.jumpListItem("USB", number);
+};
+
 Yamaha.prototype.selectWebRadioListItem = function(number) {
     return this.selectListItem("NET_RADIO", number);
+};
+
+Yamaha.prototype.jumpWebRadioListItem = function(number) {
+    return this.jumpListItem("NET_RADIO", number);
 };
 
 Yamaha.prototype.selectTunerPreset = function(number) {
