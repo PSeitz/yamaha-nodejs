@@ -125,6 +125,15 @@ yamaha.selectWebRadioListItem(1)
 yamaha.switchToFavoriteNumber()
 yamaha.gotoFolder('/NET_RADIO/Radio/Favorites', 'NET_RADIO')
 
+// Find the index of a list item to select using the name of the item,
+// returns -1 if not found. Will move the list page down so index will always
+// between 1 and 8.
+yamaha.getIndexOfMenuItem(
+    await yamaha.getWebRadioList(), 
+    'BBC Radio 1', 
+    'NET_RADIO'
+)
+
 // Zone Commands
 yamaha.getAvailableZones()
 yamaha.getZoneConfig(zone)
