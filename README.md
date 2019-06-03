@@ -123,6 +123,7 @@ yamaha.selectWebRadioListItem(1)
 
 // Chained Commands, they ensure the receiver is in the right state
 yamaha.switchToFavoriteNumber()
+yamaha.gotoFolder('/NET_RADIO/Radio/Favorites', 'NET_RADIO')
 
 // Zone Commands
 yamaha.getAvailableZones()
