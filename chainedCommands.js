@@ -49,7 +49,9 @@ Yamaha.prototype.switchToWebRadioWithName = function(name){
 
 };
 
-Yamaha.prototype.getIndexOfMenuItem = async function(list, item, listName) {
+Yamaha.prototype.getIndexOfMenuItem = async function(item, listName) {
+    await this.jumpListItem(listName, 1);
+    list = await this.getWebRadioList()
     while (true) {
         const Current_List = list.YAMAHA_AV[listName][0].List_Info[0].Current_List[0];
         let index = 1;
@@ -103,9 +105,8 @@ Yamaha.prototype.gotoFolder = async function(path, listName) {
         }
         const currentLayer = menuOrder.indexOf(menuName);
         const nextMenuItemName = menuOrder[currentLayer + 1];
-        await this.jumpListItem(listName, 1);
         list = await this.getWebRadioList();
-        const index = await this.getIndexOfMenuItem(list, nextMenuItemName, listName);
+        const index = await this.getIndexOfMenuItem(nextMenuItemName, listName);
         if (index < 0) {
             throw new Error(`cannot find menu item "${nextMenuItemName}" in "${menuName}"`)
         }
