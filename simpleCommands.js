@@ -343,10 +343,6 @@ Yamaha.prototype.isHeadphoneConnected = function() {
     });
 }
 
-Yamaha.prototype.getCurrentScene = function(zone) {
-
-}
-
 Yamaha.prototype.getBasicInfo = function(zone) {
 
     var command = '<YAMAHA_AV cmd="GET"><' + getZone(zone) + '><Basic_Status>GetParam</Basic_Status></' + getZone(zone) + '></YAMAHA_AV>';
