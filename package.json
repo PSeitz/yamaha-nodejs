@@ -1,26 +1,48 @@
 {
-  "name": "yamaha-nodejs",
-  "version": "0.9.4",
-  "description": "An API to control your YAMAHA Receiver written in nodejs",
-  "main": "yamaha.js",
+  "_from": "yamaha-nodejs@>=0.9.0",
+  "_id": "yamaha-nodejs@0.9.4",
+  "_inBundle": false,
+  "_integrity": "sha512-PRMzK7GvZhkSSlnVe5O45TRHjFXVYtb99z0r9N2jOMlFrwmym3FwXeeASOYy0g2yTQVagp9zGY2OMbvzYFT9aQ==",
+  "_location": "/homebridge-yamaha-avr/yamaha-nodejs",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "yamaha-nodejs@>=0.9.0",
+    "name": "yamaha-nodejs",
+    "escapedName": "yamaha-nodejs",
+    "rawSpec": ">=0.9.0",
+    "saveSpec": null,
+    "fetchSpec": ">=0.9.0"
+  },
+  "_requiredBy": [
+    "/homebridge-yamaha-avr"
+  ],
+  "_resolved": "https://registry.npmjs.org/yamaha-nodejs/-/yamaha-nodejs-0.9.4.tgz",
+  "_shasum": "df63ba73f7717be001fde0ad39aeae712a120097",
+  "_spec": "yamaha-nodejs@>=0.9.0",
+  "_where": "/usr/local/lib/node_modules/homebridge-yamaha-avr",
+  "author": {
+    "name": "Pascal Seitz"
+  },
+  "bugs": {
+    "url": "https://github.com/PSeitz/Yamaha-Network-API/issues"
+  },
+  "bundleDependencies": false,
   "dependencies": {
     "bluebird": "^3.3.4",
-    "request": "^2.88.0",
-    "xml2js": "^0.4.16",
     "debug": "^2.2.0",
-    "peer-ssdp": "0.0.5"
+    "peer-ssdp": "0.0.5",
+    "request": "^2.88.0",
+    "xml2js": "^0.4.16"
   },
+  "deprecated": false,
+  "description": "An API to control your YAMAHA Receiver written in nodejs",
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0"
   },
-  "scripts": {
-    "test": "mocha mochatest"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/PSeitz/yamaha-nodejs.git"
-  },
+  "homepage": "https://github.com/PSeitz/Yamaha-Network-API",
   "keywords": [
     "yamaha",
     "api",
@@ -29,10 +51,15 @@
     "receiver",
     "network"
   ],
-  "author": "Pascal Seitz",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/PSeitz/Yamaha-Network-API/issues"
+  "main": "yamaha.js",
+  "name": "yamaha-nodejs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PSeitz/yamaha-nodejs.git"
   },
-  "homepage": "https://github.com/PSeitz/Yamaha-Network-API"
+  "scripts": {
+    "test": "mocha mochatest"
+  },
+  "version": "0.9.4"
 }
