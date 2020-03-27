@@ -664,6 +664,19 @@ Yamaha.prototype.selectTunerFrequency = function(band, frequency) {
     return this.SendXMLToReceiver(command);
 };
 
+Yamaha.prototype.getNetRadioPlayInfo = function() {
+    var command = '<YAMAHA_AV cmd="GET"><NET_RADIO><Play_Info>GetParam</Play_Info></NET_RADIO></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command).then(
+            function (xml) {
+                return xml2js.parseStringAsync(xml, { explicitArray: false })
+            }
+        ).then(
+            function (resp) {
+                return resp.YAMAHA_AV.NET_RADIO.Play_Info;
+            }
+    );
+}
+
 //TODO: More XML CONVERT
 Yamaha.prototype.getWebRadioList = function() {
     return this.getList("NET_RADIO");
