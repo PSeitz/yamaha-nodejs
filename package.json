@@ -1,38 +1,38 @@
 {
-  "name": "yamaha-nodejs",
-  "version": "0.9.1",
-  "description": "An API to control your YAMAHA Receiver written in nodejs",
-  "main": "yamaha.js",
-  "dependencies": {
-    "bluebird": "^3.3.4",
-    "request": "^2.88.0",
-    "xml2js": "^0.4.16",
-    "debug": "^2.2.0",
-    "peer-ssdp": "0.0.5"
-  },
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "chai-as-promised": "^5.2.0"
-  },
-  "scripts": {
-    "test": "mocha mochatest"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/PSeitz/yamaha-nodejs.git"
-  },
-  "keywords": [
-    "yamaha",
-    "api",
-    "nodejs",
-    "node",
-    "receiver",
-    "network"
-  ],
-  "author": "Pascal Seitz",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/PSeitz/Yamaha-Network-API/issues"
-  },
-  "homepage": "https://github.com/PSeitz/Yamaha-Network-API"
-}
+   "name": "yamaha-nodejs",
+   "version": "0.9.5",
+   "description": "An API to control your YAMAHA Receiver written in nodejs",
+   "main": "yamaha.js",
+   "dependencies": {
+     "bluebird": "^3.3.4",
+     "request": "^2.88.0",
+     "xml2js": "^0.4.16",
+     "debug": "^2.2.0",
+     "peer-ssdp": "0.0.5"
+   },
+   "devDependencies": {
+     "chai": "^3.5.0",
+     "chai-as-promised": "^5.2.0"
+   },
+   "scripts": {
+     "test": "mocha mochatest"
+   },
+   "repository": {
+     "type": "git",
+     "url": "https://github.com/PSeitz/yamaha-nodejs.git"
+   },
+   "keywords": [
+     "yamaha",
+     "api",
+     "nodejs",
+     "node",
+     "receiver",
+     "network"
+   ],
+   "author": "Pascal Seitz",
+   "license": "ISC",
+   "bugs": {
+     "url": "https://github.com/PSeitz/Yamaha-Network-API/issues"
+   },
+   "homepage": "https://github.com/PSeitz/Yamaha-Network-API"
+ }

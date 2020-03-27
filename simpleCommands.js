@@ -183,6 +183,11 @@ Yamaha.prototype.setInputTo = function(to, zone) {
     return this.SendXMLToReceiver(command);
 };
 
+Yamaha.prototype.setSceneTo = function(to, zone) {
+   var command = '<YAMAHA_AV cmd="PUT"><' + getZone(zone) + '><Scene><Scene_Sel>Scene ' + to + '</Scene_Sel></Scene></' + getZone(zone) + '></YAMAHA_AV>';
+   return this.SendXMLToReceiver(command);
+}
+
 Yamaha.prototype.remoteCursor = function(cursorKey) {
     // Valid Cursor Commands (case-sensitve):
     // Up, Down, Right, Left, Return, Sel
@@ -513,8 +518,23 @@ Yamaha.prototype.getAvailableInputs = function() {
     });
 };
 
+Yamaha.prototype.getAvailableInputsWithNames = function() {
+   return this.getSystemConfig().then(function(info) {
+       var inputs = [];
+       var inputsXML = info.YAMAHA_AV.System[0].Config[0].Name[0];
+       for (var prop in inputsXML) {
+           inputs.push(inputsXML[prop][0]);
+       }
+       return inputs;
+   });
+};
 Yamaha.prototype.selectListItem = function(listname, number) {
     var command = '<YAMAHA_AV cmd="PUT"><' + listname + '><List_Control><Direct_Sel>Line_' + number + '</Direct_Sel></List_Control></' + listname + '></YAMAHA_AV>';
+    return this.SendXMLToReceiver(command);
+};
+
+Yamaha.prototype.jumpListItem = function(listname, lineNumber) {
+    var command = '<YAMAHA_AV cmd="PUT"><' + listname + '>}><List_Control><Jump_Line>' + lineNumber + '</Jump_Line></List_Control></' + listname + '></YAMAHA_AV>';
     return this.SendXMLToReceiver(command);
 };
 
@@ -585,8 +605,16 @@ Yamaha.prototype.selectUSBListItem = function(number) {
     return this.selectListItem("USB", number);
 };
 
+Yamaha.prototype.jumpUSBListItem = function(number) {
+    return this.jumpListItem("USB", number);
+};
+
 Yamaha.prototype.selectWebRadioListItem = function(number) {
     return this.selectListItem("NET_RADIO", number);
+};
+
+Yamaha.prototype.jumpWebRadioListItem = function(number) {
+    return this.jumpListItem("NET_RADIO", number);
 };
 
 Yamaha.prototype.selectTunerPreset = function(number) {
