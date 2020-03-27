@@ -665,20 +665,15 @@ Yamaha.prototype.selectTunerFrequency = function(band, frequency) {
 };
 
 Yamaha.prototype.getNetRadioPlayInfo = function() {
-    function convertObjectKeysFromArraysToObjects(inputObj) {
-        const obj = {};
-        for (const key of Object.keys(inputObj)) {
-            obj[key] = inputObj[key][0];
-        }
-        return obj;
-    }
     var command = '<YAMAHA_AV cmd="GET"><NET_RADIO><Play_Info>GetParam</Play_Info></NET_RADIO></YAMAHA_AV>';
-    return this.SendXMLToReceiver(command).then(xml2js.parseStringAsync).then(
-        function (resp) {
-            const playInfoWithDataAsArrays = resp.YAMAHA_AV.NET_RADIO[0].Play_Info['0'];
-            const playInfo = convertObjectKeysFromArraysToObjects(playInfoWithDataAsArrays);
-            return playInfo;
-        }
+    return this.SendXMLToReceiver(command).then(
+            function (xml) {
+                return xml2js.parseStringAsync(xml, { explicitArray: false })
+            }
+        ).then(
+            function (resp) {
+                return resp.YAMAHA_AV.NET_RADIO.Play_Info;
+            }
     );
 }
 
