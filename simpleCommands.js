@@ -507,6 +507,21 @@ Yamaha.prototype.getAvailableZones = function() {
     });
 };
 
+Yamaha.prototype.getAvailableFeatures = function() {
+    return this.getSystemConfig().then(function(info) {
+        var features = [];
+        var featuresXML = info.YAMAHA_AV.System[0].Config[0].Feature_Existence[0];
+        debug("getAvailableFeatures",JSON.stringify(info, null, 2));
+        for (var prop in featuresXML) {
+            // Only return zones that the receiver supports
+            if (! prop.includes('one') && featuresXML[prop].includes('1')) {
+                features.push(prop);
+            }
+        }
+        return features;
+    });
+};
+
 Yamaha.prototype.getAvailableInputs = function() {
     return this.getSystemConfig().then(function(info) {
         var inputs = [];
